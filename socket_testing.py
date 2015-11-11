@@ -14,7 +14,8 @@ class EchoSocket(object):
 	def __init__(self, port=8888):
 		#creates a socket with INET protocol and streaming; gets this computer's address; uses an arbitrary port; binds socket to the address and port.
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.host = socket.gethostbyname(socket.gethostname())
+		# self.host = socket.gethostbyname(socket.gethostname())
+		self.host = ''
 		self.port = port #this is an arbitrary number right now.
 		print "Binding socket to ", self.host, " : ", self.port
 		self.sock.bind((self.host, self.port))
@@ -27,12 +28,17 @@ class EchoSocket(object):
 		while True:
 			c, addr = self.sock.accept()
 			print "got connection from ", addr
+			break
 		chunks = []
 		received_bytes = 0
+		# print repr(msg_bytes)
+		# print "test"
 		while received_bytes < msg_bytes:
-			chunk = self.sock.recv(min(msg_bytes - received_bytes, 2048))
+			# print received_bytes, msg_bytes
+			chunk = c.recv(min(msg_bytes - received_bytes, 2048))
 			if chunk == '':
-				raise RuntimeError("Socket connection broken.")
+				break
+				# raise RuntimeError("Socket connection broken.")
 			chunks.append(chunk)
 			received_bytes += len(chunk)
 		msg = ''.join(chunks)

@@ -55,24 +55,9 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage() {
         String stringToSend = messageText.getText().toString();
         String ipAddress = ipText.getText().toString();
-        int port = 8888;
-        Socket socket = null;
-
-        DataOutputStream dataOutputStream = null;
-
-        try {
-//            socket = new Socket(ipAddress, port);
-            socket = new Socket("10.7.64.225", 8888);
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF(stringToSend);
-            dataOutputStream.close();
-            socket.close();
-
-        } catch (IOException ex) {
-            Log.e("socket_error", ex.getMessage());
-        }
-
-
+        String listForAsync[];
+        listForAsync = new String[] {ipAddress, stringToSend};
+        new SocketAsync().execute(listForAsync);
     }
 
     @Override
