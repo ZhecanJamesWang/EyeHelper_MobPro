@@ -6,17 +6,30 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
+
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.app.Activity;
-import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-
+    private Socket socket;
+    private String messageText;
+    private EditText ipText;
+    private static final int PORT = 2424;
 
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
@@ -29,11 +42,27 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ipText = (EditText) findViewById(R.id.ip_text);
+        Button sendButton = (Button) findViewById(R.id.send_btn);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    public void sendMessage() {
+
+        messageText = "Yaw" + Float.valueOf(last_x).toString();
+        String ipAddress = ipText.getText().toString();
+        String listForAsync[];
+        listForAsync = new String[] {ipAddress, messageText};
+        new SocketAsync().execute(listForAsync);
+    }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
