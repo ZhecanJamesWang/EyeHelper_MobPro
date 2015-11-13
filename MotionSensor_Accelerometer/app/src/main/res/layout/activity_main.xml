@@ -5,9 +5,8 @@
     android:orientation="vertical" >
 
     <EditText
-        android:layout_width="2dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:hint="ip address goes here"
         android:id="@+id/ip_text"
         android:inputType="phone" />
