@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
+ * An extension of AsyncTask; used to create a socket, send a string to a given IP address, and close the socket.
+ * Used to pass information to a server.
+ * Parameters: a String[] with (ipAddress, stringToSend).
  * Created by matt on 11/10/15.
  */
 public class SocketAsync extends AsyncTask<String, Void, Void> {
@@ -20,7 +23,6 @@ public class SocketAsync extends AsyncTask<String, Void, Void> {
         String messageToSend = strings[1];
         try {
             socket = new Socket(ipAddress, port);
-//            socket = new Socket("10.7.64.225", 8888);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeUTF(messageToSend);
             dataOutputStream.close();
