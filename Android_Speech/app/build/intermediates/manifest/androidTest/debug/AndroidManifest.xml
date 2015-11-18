@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="speech.survivingwithandroid.com.android_speech.test">
+
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="21" />
+
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="speech.survivingwithandroid.com.android_speech"
+                     android:handleProfiling="false"
+                     android:functionalTest="false"
+                     android:label="Tests for speech.survivingwithandroid.com.android_speech"/>
+</manifest>

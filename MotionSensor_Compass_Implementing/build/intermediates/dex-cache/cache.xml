@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="57ae0d750ff83f0c738d21720224ac7ea866a094">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/pre-dexed/debug/classes-7bbbcf1e05269584262010cc3acbb8bbed9e9764.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.0/support-annotations-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="92e3fc113ec3ee36b64603a38857b95700025633">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.0-06ea8f108d53b1a3acde261552fe44db808d9f96.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="57ae0d750ff83f0c738d21720224ac7ea866a094">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/pre-dexed/debug/classes-d045035e5494006e4ebf5179a8480567dc302816.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/libs/internal_impl-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8716243bf04bae8d6c9ca94d27b9a9be7236f0a3">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.0-c76b36c238f02c0be43c7ecf65a1668b8afc75bf.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/libs/internal_impl-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8716243bf04bae8d6c9ca94d27b9a9be7236f0a3">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.0-ec5bcf49d5169e03f0617e2cbc1b11956f05a9ab.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ddde541c289c8b816a8f8fd6c325d80788c522a6">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass_Implementing/app/build/intermediates/pre-dexed/debug/classes-b04890ab6c091352542dc7de374f561b3ce21475.jar" />
+    </item>
+    <item
+        jar="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ddde541c289c8b816a8f8fd6c325d80788c522a6">
+        <dex dex="/home/zhecan/github/EyeHelper_MobPro/MotionSensor_Compass/app/build/intermediates/pre-dexed/debug/classes-0879600417187e850789dd00e69edb16aa7ccadb.jar" />
+    </item>
+
+</items>
