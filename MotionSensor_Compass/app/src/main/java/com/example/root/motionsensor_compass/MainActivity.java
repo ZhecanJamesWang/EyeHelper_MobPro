@@ -12,9 +12,17 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends Activity {
 
-    Float azimut;  // View to draw a compass
+    Float azimut;// View to draw a compass
+    OrientationSensor orientationSensor;
+    CustomDrawableView mCustomDrawableView;
+    private SensorManager mSensorManager;
+    Sensor accelerometer;
+    Sensor magnetometer;
+    static final float ALPHA = 0.15f;
+    SensorEventListener msensorEventListener;
+
 
     public class CustomDrawableView extends View {
         Paint paint = new Paint();
@@ -45,10 +53,20 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     }
 
-    CustomDrawableView mCustomDrawableView;
-    private SensorManager mSensorManager;
-    Sensor accelerometer;
-    Sensor magnetometer;
+
+
+    protected float[] lowpass(float[] input, float[] output){
+        if (output==null){
+            return input;
+        }
+        for (int i=0; i<input.length; i++){
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
+    }
+
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,38 +75,40 @@ public class MainActivity extends Activity implements SensorEventListener {
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        orientationSensor = new OrientationSensor(mSensorManager, msensorEventListener);
+        azimut = orientationSensor.m_azimuth_radians;
+
     }
 
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        orientationSensor.Register(this, SensorManager.SENSOR_DELAY_UI);
     }
 
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
+        orientationSensor.Unregister();
     }
 
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {  }
-
-    float[] mGravity;
-    float[] mGeomagnetic;
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
-            if (success) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-                azimut = orientation[0]; // orientation contains: azimut, pitch and roll
-            }
-        }
-        mCustomDrawableView.invalidate();
-    }
+//    public void onAccuracyChanged(Sensor sensor, int accuracy) {  }
+//
+//    float[] mGravity;
+//    float[] mGeomagnetic;
+//    public void onSensorChanged(SensorEvent event) {
+//        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+//            mGravity = event.values;
+//        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+//            mGeomagnetic = event.values;
+//        if (mGravity != null && mGeomagnetic != null) {
+//            float R[] = new float[9];
+//            float I[] = new float[9];
+//            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+//            if (success) {
+//                float orientation[] = new float[3];
+//                SensorManager.getOrientation(R, orientation);
+//                azimut = orientation[0]; // orientation contains: azimut, pitch and roll
+//            }
+//        }
+//        mCustomDrawableView.invalidate();
+//    }
 }
