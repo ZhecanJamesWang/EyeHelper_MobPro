@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void sendMessage() {
 
-        messageText = "Yaw" + Float.valueOf(last_x).toString();
+        messageText = "Yaw" + " " + Float.valueOf(last_x).toString();
         String ipAddress = ipText.getText().toString();
         String listForAsync[];
         listForAsync = new String[] {ipAddress, messageText};
