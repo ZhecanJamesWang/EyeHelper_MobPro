@@ -20,15 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Existing Landmarks"
+            android:text="@string/existing_landmark"
             android:id="@+id/existing_landmark"
+            android:contentDescription="@string/existing_landmark"
             />
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="New Route"
+            android:text="@string/new_landmark"
             android:id="@+id/new_landmark"
+            android:contentDescription="@string/new_landmark"
             />
     </LinearLayout>
 
@@ -59,8 +61,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="New Point"
+            android:text="@string/settings"
             android:id="@+id/settings"
+            android:contentDescription="@string/settings"
             />
     </LinearLayout>
 </LinearLayout>
