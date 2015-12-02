@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
  */
 public class UIFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    public SensorHandler sensorHandler;
+
     public static UIFragment newInstance(String param1, String param2) {
         UIFragment fragment = new UIFragment();
         return fragment;
@@ -39,6 +41,7 @@ public class UIFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sensorHandler = new SensorHandler(getActivity());
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
         Button goToExisting = (Button) uiLayout.findViewById(R.id.existing_landmark);
         Button newLandmark = (Button) uiLayout.findViewById(R.id.new_landmark);
@@ -123,5 +126,7 @@ public class UIFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+
+
 
 }
