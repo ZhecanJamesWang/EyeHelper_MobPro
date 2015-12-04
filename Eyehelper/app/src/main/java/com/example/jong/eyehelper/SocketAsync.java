@@ -32,7 +32,6 @@ public class SocketAsync extends AsyncTask<String, Void, Void> {
             while ((bytes_received = dataInputStream.read(buffer)) != -1) {
                 receivedMessage += new String(buffer, "UTF-8");
             }
-            dataInputStream.read(buffer);
             Log.d("socket_info", receivedMessage);
             socket.close();
         } catch (IOException ex) {
