@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -83,10 +86,11 @@ public class MainActivity extends Activity implements SensorEventListener{
                 SensorManager.SENSOR_DELAY_FASTEST);
     }
 
+    @Override
     public void onSensorChanged(SensorEvent event) {
-        System.out.printf("%.2f", fusedOrientation[0]);
-        System.out.printf("%.2f", fusedOrientation[1]);
-        System.out.printf("%.2f", fusedOrientation[2]);
+        ((TextView)findViewById(R.id.Pitch)).setText("0:" + fusedOrientation[0]);
+        ((TextView)findViewById(R.id.Roll)).setText("1:"+fusedOrientation[1]);
+        ((TextView)findViewById(R.id.Yaw)).setText("2:"+fusedOrientation[2]);
         switch(event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 // copy new accelerometer data into accel array
@@ -106,7 +110,7 @@ public class MainActivity extends Activity implements SensorEventListener{
                 break;
         }
     }
-
+    @Override
     public void onAccuracyChanged(Sensor sensor, int TIME_CONSTANT){}
 
     public void calculateAccMagOrientation() {
@@ -267,15 +271,15 @@ public class MainActivity extends Activity implements SensorEventListener{
             float oneMinusCoeff = 1.0f - FILTER_COEFFICIENT;
             fusedOrientation[0] =
                     FILTER_COEFFICIENT * gyroOrientation[0]
-                            + oneMinusCoeff * accMagOrientation[0];
+                            + oneMinusCoeff *accMagOrientation[0];
 
             fusedOrientation[1] =
                     FILTER_COEFFICIENT * gyroOrientation[1]
-                            + oneMinusCoeff * accMagOrientation[1];
+                           + oneMinusCoeff * accMagOrientation[1];
 
             fusedOrientation[2] =
                     FILTER_COEFFICIENT * gyroOrientation[2]
-                            + oneMinusCoeff * accMagOrientation[2];
+                           + oneMinusCoeff * accMagOrientation[2];
 
             // overwrite gyro matrix and orientation with fused orientation
             // to comensate gyro drift
