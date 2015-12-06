@@ -1,14 +1,25 @@
 package com.example.jong.eyehelper;
 
-import android.net.Uri;
-import android.speech.tts.TextToSpeech;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,67 +42,87 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.speech.tts.TextToSpeech.OnInitListener;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements UIFragment.OnFragmentInteractionListener, TextToSpeech.OnInitListener{
-
-    FragmentManager manager;
-    FragmentTransaction transaction;
+/**
+ * SpeechRepeatActivity
+ * - processes speech input
+ * - presents user with list of suggested words
+ * - when user selects a word from the list, the app speaks the word back using the TTS engine
+ */
+public class VoiceRecognitionAndTTS extends Activity implements TextToSpeech.OnInitListener {
 
     //variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
+
+
+    //ListView for displaying suggested words
+    private ListView wordList;
+
+    //Log tag for output information
     private final String TAG = "SpeechRepeatActivity";
+
     private Boolean firstTIme = true;
+
     private ArrayList<String> suggestedWords;
     private ArrayList<String>  suggestedCommand;
     private int MY_DATA_CHECK_CODE = 0;
     public TextToSpeech repeatTTS;
     private Boolean ttsFinish = false;
+    private ArrayAdapter wordlistAdapter;
 
-
+    /** Create the Activity, prepare to process speech and repeat */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
+        //call superclass
         super.onCreate(savedInstanceState);
+
+
+        //set content view
+//        setContentView(R.layout.activity_main);
+
+        //gain reference to speak button
+
+        //gain reference to word list
         suggestedWords = new ArrayList<>();
+
+
+
         Intent checkTTSIntent = new Intent();
 //            //check TTS data
         checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 //            //start the checking Intent - will retrieve result in onActivityResult
         this.startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
-//        Log.d(TAG, "tts launch sucessfully");
-
-        manager = getSupportFragmentManager();
-        setContentView(R.layout.activity_main);
-        transaction = manager.beginTransaction();
-        UIFragment uiFragment = new UIFragment();
-        transaction.replace(R.id.container, uiFragment);
-        transaction.commit();
 
     }
+    /**
+     * Called when the user presses the speak button
+     */
+//    public void onClick(View v) {
+//        if (v.getId() == R.id.speech_btn) {
+//            //listen for results
+//            String outputSpeech = "What do you want the landmark name to be?";
+//            speakAndListen(outputSpeech, true);
+//        }
+//    }
 
-    public void onFragmentInteraction(Uri uri) {
-        //empty right now
-    }
+    /**
+     * Instruct the app to listen for user speech input
+     */
 
-    public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening){
+    public void speakAndListen(String outputSpeech, Boolean firstTIme){
         //listen for results
         ttsFinish = false;
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "messageID");
-        Log.d(TAG, "Before Speech");
-//        repeatTTS.speak(outputSpeech, TextToSpeech.QUEUE_FLUSH, map);
-        Log.d(TAG,"After Speech");
-//        setTtsListener();
-//        while(ttsFinish != true);
-//        {
-//            Log.d(TAG, "tts on progress");
-//        }
-        this.firstTIme = firstTIme;
-        if (Listening)
+        repeatTTS.speak(outputSpeech, TextToSpeech.QUEUE_FLUSH, map);
+        setTtsListener();
+        while(ttsFinish != true);
         {
-            listenToSpeech();
+            Log.d(TAG, "tts on progress");
         }
-
+        listenToSpeech();
+        this.firstTIme = firstTIme;
     }
 
     public void listenToSpeech() {
@@ -132,12 +163,16 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
             if (firstTIme){
                 suggestedWords = detectedWords;
                 //set the retrieved list to display in the ListView using an ArrayAdapter
+                wordlistAdapter = (ArrayAdapter)wordList.getAdapter();
+                wordlistAdapter.clear();
+                wordlistAdapter.addAll(suggestedWords);
+                wordlistAdapter.notifyDataSetChanged();
 
                 Log.d("onActivityResult", detectedWords.get(0));
                 word = suggestedWords.get(0);
 
                 String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
-                speakAndListen(outputSpeech, false, true);
+                speakAndListen(outputSpeech, false);
             }
             else{
                 suggestedCommand = detectedWords;
@@ -145,26 +180,27 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     String tmpCommand = suggestedWords.get(0);
                     suggestedWords.clear();
                     suggestedWords.add(tmpCommand);
+                    wordlistAdapter.clear();
+                    wordlistAdapter.addAll(suggestedWords);
+                    wordlistAdapter.notifyDataSetChanged();
                     Toast.makeText(getApplicationContext(), "you choose " + suggestedWords.get(0), Toast.LENGTH_SHORT).show();
 
                 }
                 else if (suggestedCommand.get(0).equals("cancel")){
 //                    firstTIme = true;
 //                    listenToSpeech();
-                    String outputSpeech = "You cancel the service";
-                    speakAndListen(outputSpeech, false, false);
 
                 }
                 else if (suggestedCommand.get(0).equals("next")){
                     suggestedWords.remove(0);
                     word = suggestedWords.get(0);
                     String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
-                    speakAndListen(outputSpeech, false, true);
+                    speakAndListen(outputSpeech, false);
                 }
                 else{
                     word = suggestedWords.get(0);
                     String outputSpeech = "Sorry. I dont get it. Did you say" + word + " before ?" + " Please answer yes, next or cancel";
-                    speakAndListen(outputSpeech, false, true);
+                    speakAndListen(outputSpeech, false);
                 }
 
 
@@ -173,11 +209,9 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         if (requestCode == MY_DATA_CHECK_CODE)
         {
             //we have the data - create a TTS instance
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
                 repeatTTS = new TextToSpeech(this, this);
                 //data not installed, prompt the user to install it
-                Log.d(TAG, "create repeatTTS instance");
-            }
             else
             {
                 //intent will take user to TTS download page in Google Play
@@ -190,7 +224,15 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         //call superclass method
         super.onActivityResult(requestCode, resultCode, data);
 
-        }
+    }
+    public void onInit(int initStatus) {
+        //if successful, set locale
+        if (initStatus == TextToSpeech.SUCCESS)
+            repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
+
+    }
+
+
 
     private void setTtsListener() {
         if (Build.VERSION.SDK_INT >= 15)
@@ -238,16 +280,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         }
     }
 
-
-    public void onInit(int initStatus) {
-        //if successful, set locale
-        if (initStatus == TextToSpeech.SUCCESS)
-            repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
-            String outputSpeech = "Welcome to Eye Helper project";
-            speakAndListen(outputSpeech, false, false);
-            Log.d(TAG,"onInit");
-
-    }
-
-
 }
+
+
+

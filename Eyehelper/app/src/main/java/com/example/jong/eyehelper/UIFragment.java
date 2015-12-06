@@ -3,6 +3,7 @@ package com.example.jong.eyehelper;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +25,8 @@ import android.widget.LinearLayout;
 public class UIFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public SensorHandler sensorHandler;
+    private MainActivity mainActivity = (MainActivity)getActivity();
+    private String TAG = "UIFragment";
 
     public static UIFragment newInstance(String param1, String param2) {
         UIFragment fragment = new UIFragment();
@@ -41,6 +46,8 @@ public class UIFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView ");
+
         sensorHandler = new SensorHandler(getActivity());
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
 
@@ -64,9 +71,18 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("start new route", "clicked");
+                String outputSpeech = "What do you want the landmark name to be?";
+                mainActivity.speakAndListen(outputSpeech, true, true);
             }
         });
 
+
+        endNewRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("end new route", "clicked");
+            }
+        });
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,12 +104,6 @@ public class UIFragment extends Fragment {
             }
         });
 
-        endNewRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("end new route", "clicked");
-            }
-        });
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
