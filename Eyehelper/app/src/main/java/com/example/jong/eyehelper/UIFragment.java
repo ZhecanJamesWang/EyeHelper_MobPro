@@ -43,47 +43,63 @@ public class UIFragment extends Fragment {
                              Bundle savedInstanceState) {
         sensorHandler = new SensorHandler(getActivity());
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
-        Button goToExisting = (Button) uiLayout.findViewById(R.id.existing_landmark);
-        Button newLandmark = (Button) uiLayout.findViewById(R.id.new_landmark);
-        Button nextLandmark = (Button) uiLayout.findViewById(R.id.next_landmark);
-        Button prevLandmark= (Button) uiLayout.findViewById(R.id.prev_landmark);
-        Button settings = (Button) uiLayout.findViewById(R.id.settings);
 
-        goToExisting.setOnClickListener(new View.OnClickListener() {
+        Button existingRoutes = (Button) uiLayout.findViewById(R.id.existingRoutes);
+        Button startNewRoute = (Button) uiLayout.findViewById(R.id.startNewRoute);
+        Button endNewRoute = (Button) uiLayout.findViewById(R.id.endNewRoute);
+        Button next = (Button) uiLayout.findViewById(R.id.Next);
+        Button previous= (Button) uiLayout.findViewById(R.id.Previous);
+        Button Ok = (Button) uiLayout.findViewById(R.id.ok);
+        Button point = (Button) uiLayout.findViewById(R.id.point);
+
+
+        existingRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("goexisting", "clicked");
+                Log.d("existing routes", "clicked");
             }
         });
 
-        newLandmark.setOnClickListener(new View.OnClickListener() {
+        startNewRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("newlandmark","clicked");
+                Log.d("start new route", "clicked");
             }
         });
 
-        nextLandmark.setOnClickListener(new View.OnClickListener() {
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("nextlandmark","clicked");
+                Log.d("next", "clicked");
             }
         });
 
-        prevLandmark.setOnClickListener(new View.OnClickListener() {
+        previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("prevlandmark","clicked");
+                Log.d("previous", "clicked");
             }
         });
 
-        settings.setOnClickListener(new View.OnClickListener() {
+        Ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("settings","clicked");
+                Log.d("Ok", "clicked");
             }
         });
 
+        endNewRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("end new route", "clicked");
+            }
+        });
+        point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("point", "clicked");
+            }
+        });
 
         return uiLayout;
     }
