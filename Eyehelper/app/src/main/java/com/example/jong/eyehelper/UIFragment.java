@@ -25,7 +25,8 @@ import java.util.HashMap;
 public class UIFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public SensorHandler sensorHandler;
-    private MainActivity mainActivity = (MainActivity)getActivity();
+    private MainActivity mainActivity;
+
     private String TAG = "UIFragment";
 
     public static UIFragment newInstance(String param1, String param2) {
@@ -40,7 +41,7 @@ public class UIFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mainActivity = (MainActivity)getActivity();
     }
 
     @Override

@@ -79,13 +79,13 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "messageID");
         Log.d(TAG, "Before Speech");
-//        repeatTTS.speak(outputSpeech, TextToSpeech.QUEUE_FLUSH, map);
-        Log.d(TAG,"After Speech");
-//        setTtsListener();
-//        while(ttsFinish != true);
-//        {
-//            Log.d(TAG, "tts on progress");
-//        }
+        repeatTTS.speak(outputSpeech, TextToSpeech.QUEUE_FLUSH, map);
+        Log.d(TAG, "After Speech");
+        setTtsListener();
+        while(ttsFinish != true);
+        {
+            Log.d(TAG, "tts on progress");
+        }
         this.firstTIme = firstTIme;
         if (Listening)
         {
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
             //store the returned word list as an ArrayList
             ArrayList<String>  detectedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
+            Log.d("WHAT YOU SAY", detectedWords.get(0));
             if (firstTIme){
                 suggestedWords = detectedWords;
                 //set the retrieved list to display in the ListView using an ArrayAdapter
@@ -141,25 +141,36 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
             }
             else{
                 suggestedCommand = detectedWords;
+
                 if (suggestedCommand.get(0).equals("yes")) {
                     String tmpCommand = suggestedWords.get(0);
                     suggestedWords.clear();
                     suggestedWords.add(tmpCommand);
                     Toast.makeText(getApplicationContext(), "you choose " + suggestedWords.get(0), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"YOU SAY YES!");
 
                 }
                 else if (suggestedCommand.get(0).equals("cancel")){
-//                    firstTIme = true;
-//                    listenToSpeech();
                     String outputSpeech = "You cancel the service";
                     speakAndListen(outputSpeech, false, false);
 
                 }
                 else if (suggestedCommand.get(0).equals("next")){
-                    suggestedWords.remove(0);
-                    word = suggestedWords.get(0);
-                    String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
-                    speakAndListen(outputSpeech, false, true);
+                    try
+                    {
+                        suggestedWords.remove(0);
+                        word = suggestedWords.get(0);
+                        String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
+                        speakAndListen(outputSpeech, false, true);
+                    }
+                    catch (Exception exception)
+                    {
+                        String outputSpeech = "Sorry, please try to speak again!";
+                        speakAndListen(outputSpeech, true, true);
+                    }
+
+
+
                 }
                 else{
                     word = suggestedWords.get(0);
