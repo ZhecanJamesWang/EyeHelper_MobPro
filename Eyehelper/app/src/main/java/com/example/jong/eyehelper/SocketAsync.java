@@ -36,9 +36,8 @@ public class SocketAsync extends AsyncTask<String, Void, Void> {
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";
-//            if (dataInputStream.ready()){
             receivedMessage += dataInputStream.readLine();
-//            }
+
 //            else{
 //                Thread.sleep(1000);
 //            }
