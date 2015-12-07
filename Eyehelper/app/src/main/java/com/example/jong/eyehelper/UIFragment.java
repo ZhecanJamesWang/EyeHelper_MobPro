@@ -72,7 +72,7 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("start new route", "clicked");
-                String outputSpeech = "What do you want the landmark name to be?";
+                String outputSpeech = "Starting a new route. What do you want the first landmark name to be?";
                 mainActivity.speakAndListen(outputSpeech, true, true);
             }
         });
