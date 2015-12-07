@@ -76,22 +76,22 @@ public class MainActivity extends Activity implements OnClickListener, OnInitLis
 //            //start the checking Intent - will retrieve result in onActivityResult
         startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
 
-        //find out whether speech recognition is supported
-        PackageManager packManager = getPackageManager();
-        List<ResolveInfo> intActivities = packManager.queryIntentActivities
-                (new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        if (intActivities.size() != 0) {
-            //speech recognition is supported - detect user button clicks
-            speechBtn.setOnClickListener(this);
-
-        }
-        else
-        {
-            //speech recognition not supported, disable button and output message
-
-            speechBtn.setEnabled(false);
-            Toast.makeText(this, "Oops - Speech recognition not supported!", Toast.LENGTH_LONG).show();
-        }
+//        //find out whether speech recognition is supported
+//        PackageManager packManager = getPackageManager();
+//        List<ResolveInfo> intActivities = packManager.queryIntentActivities
+//                (new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+//        if (intActivities.size() != 0) {
+//            //speech recognition is supported - detect user button clicks
+//            speechBtn.setOnClickListener(this);
+//
+//        }
+//        else
+//        {
+//            //speech recognition not supported, disable button and output message
+//
+//            speechBtn.setEnabled(false);
+//            Toast.makeText(this, "Oops - Speech recognition not supported!", Toast.LENGTH_LONG).show();
+//        }
 
         }
     /**
