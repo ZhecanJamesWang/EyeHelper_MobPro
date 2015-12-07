@@ -1,6 +1,8 @@
 package com.example.jong.eyehelper;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -12,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -28,6 +31,7 @@ public class UIFragment extends Fragment {
     private MainActivity mainActivity;
 
     private String TAG = "UIFragment";
+    private String[] prefList;
 
     public static UIFragment newInstance(String param1, String param2) {
         UIFragment fragment = new UIFragment();
@@ -42,6 +46,7 @@ public class UIFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity)getActivity();
+
     }
 
     @Override
@@ -61,11 +66,23 @@ public class UIFragment extends Fragment {
         Button point = (Button) uiLayout.findViewById(R.id.point);
 
 
+//
+//        String PREFS_NAME1 = "datafile test";
+//        SharedPreferences settings1;
+//        SharedPreferences.Editor editor1;
+//        settings1 = getActivity().getSharedPreferences(PREFS_NAME1, Context.MODE_PRIVATE);
+//        editor1 = settings1.edit();
+//        editor1.commit();
+
+
+
         existingRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AllSharePref();
                 Log.d("existing routes", "clicked");
-            }
+                Log.d("existing routes", String.valueOf(prefList[0]));
+                    }
         });
 
         startNewRoute.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +170,14 @@ public class UIFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
+    public String [] AllSharePref(){
+        File prefsdir = new File(getActivity().getApplicationInfo().dataDir,"shared_prefs");
+        if(prefsdir.exists() && prefsdir.isDirectory()){
+            prefList = prefsdir.list();
+            Log.d(TAG, String.valueOf(prefList));
+        }
+        return prefList;
+    }
 
 
 }
