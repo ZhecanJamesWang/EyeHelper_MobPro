@@ -34,19 +34,27 @@ class EchoSocket(object):
 		while True:
 			c, addr = self.sock.accept()
 			print "got connection from ", addr
-			break
-		chunks = []
-		received_bytes = 0
-		while received_bytes < msg_bytes:
-			chunk = c.recv(min(msg_bytes - received_bytes, 2048))
-			if chunk == '':
+			buf = c.recv(64)
+			if len(buf) > 0:
+				print buf
+				c.sendall('boo')
 				break
-			chunks.append(chunk)
-			received_bytes += len(chunk)
-		msg = ''.join(chunks)
-		c.sendall("test response 12345")
-		if msg[:3] == "Yaw":
-			received_data = float(msg[4:])
+
+		
+
+		# chunks = []
+		# received_bytes = 0
+
+		# while received_bytes < msg_bytes:
+		# 	chunk = c.recv(min(msg_bytes - received_bytes, 2048))
+		# 	if chunk == '':
+		# 		break
+		# 	chunks.append(chunk)
+		# 	received_bytes += len(chunk)
+		# msg = ''.join(chunks)
+		# print msg
+		# if msg[:3] == "Yaw":
+		# 	received_data = float(msg[4:])
 		# 	self.orientation_pub.publish(Float64(received_data))
 
 		# elif msg[:5] == "Start":
@@ -55,10 +63,10 @@ class EchoSocket(object):
 		# 	self.button_pub.publish(String("Drop"))
 		# elif msg[:6] == "Pickup":
 		# 	self.button_pub.publish(String("Pickup"))
-
-		print msg
+		# c.sendall(b'resp5')
+		# print msg
 		c.close()
-		return msg
+		return buf
 
 
 if __name__ == "__main__":
