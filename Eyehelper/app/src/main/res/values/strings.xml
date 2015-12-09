@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Eyehelper</string>
+    <string name="next_landmark">Next Landmark</string>
+    <string name="prev_landmark">Previous Landmark</string>
+    <string name="existing_landmark">Existing Landmark</string>
+    <string name="new_landmark">New Route</string>
+    <string name="settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
