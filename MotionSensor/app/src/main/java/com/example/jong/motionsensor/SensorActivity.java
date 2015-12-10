@@ -75,6 +75,7 @@ public class SensorActivity extends Activity implements Runnable{
 
                 vOrientation = orientation.getOrientation();
                 updateText();
+
             }
         };
     }
@@ -83,6 +84,7 @@ public class SensorActivity extends Activity implements Runnable{
     public void run() {
 
     }
+
 
 
     private void updateText()

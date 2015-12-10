@@ -14,7 +14,7 @@ import java.net.Socket;
 public class SocketAsync extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String[] strings) {
-        int port = 8888;
+        int port = 8889;
         int BUFFER_LENGTH = 128;
         Socket socket = null;
         DataOutputStream dataOutputStream = null;
@@ -32,7 +32,7 @@ public class SocketAsync extends AsyncTask<String, Void, Void> {
 
 
 
-            Log.d("socket_info", "be receive");
+//            Log.d("socket_info", "be receive");
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";
