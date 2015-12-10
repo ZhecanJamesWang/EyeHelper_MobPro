@@ -105,18 +105,28 @@ class EchoSocket(object):
 					response = response + "| arrived"
 					self.justArrived = False
 				return response
+			else:
+				response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
+				return response
 
 		elif header == "cmd":
 			command_name = message[4:]
 			print "Received command/keypress: ", command_name
-			if command_name[:8] == "addpoint":
-				self.tracker.drop_breadcrumb()
-				print "Point added."
-			elif command_name[:6] == "goback":
-				self.isOnTrail = True # can probably migrate these checks to the phone eventually.
-			elif command_name[:4] == "zero":
+			if command_name == "new":
+				self.isOnTrail = False
+				self.trail = []
+				response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
+				return response
+			elif command_name == "end":
+				self.isOnTrail = False
+				self.trail == []
+			elif self.command_name == "point":
+				self.drop_breadcrumb()
+				print "point added"
+			elif command_name == "zero":
 				self.zero()
-
+			elif command_name == "nav":
+				self.isOnTrail = True
 		return "nul"
 
 	#================ ROS Message - Handler functions ============
