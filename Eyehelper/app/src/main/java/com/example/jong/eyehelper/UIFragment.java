@@ -115,7 +115,7 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String listForAsync[];
-                String messageText = "cmd,new";
+                String messageText = "cmd new";
                 listForAsync = new String[] {sensorHandler.ipAddress, messageText};
                 new SocketAsync().execute(listForAsync);
                 Log.d("end new route", "clicked");
@@ -129,6 +129,10 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("Ok", "clicked");
+                String listForAsync[];
+                String messageText = "cmd zero";
+                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                new SocketAsync().execute(listForAsync);
             }
         });
 
@@ -140,6 +144,10 @@ public class UIFragment extends Fragment {
                 Double y = getY();
                 String point = x.toString()+","+y.toString()+",";
                 addToDatabase("point", point, true);
+                String listForAsync[];
+                String messageText = "cmd point";
+                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                new SocketAsync().execute(listForAsync);
 
             }
         });
