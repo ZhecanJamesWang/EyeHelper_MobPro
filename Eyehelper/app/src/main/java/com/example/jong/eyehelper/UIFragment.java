@@ -114,6 +114,10 @@ public class UIFragment extends Fragment {
         endNewRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String listForAsync[];
+                String messageText = "cmd,new";
+                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                new SocketAsync().execute(listForAsync);
                 Log.d("end new route", "clicked");
                 String outputSpeech = "Finishing this route. What do you want the last landmark name to be?";
                 mainActivity.speakAndListen(outputSpeech, true, true, false);
