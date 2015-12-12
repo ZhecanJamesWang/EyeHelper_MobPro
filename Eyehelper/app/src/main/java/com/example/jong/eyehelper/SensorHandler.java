@@ -14,7 +14,7 @@ import android.app.Activity;
  * Created by root on 11/17/15.
  */
 public class SensorHandler implements SensorEventListener{
-    private String ipAddress = "192.168.35.2";
+    private String ipAddress = "192.168.35.53";
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 

@@ -21,43 +21,52 @@ class EchoSocket(object):
 		print "Binding socket to ", self.host, " : ", self.port
 		self.sock.bind((self.host, self.port))
 		self.sock.listen(5)
-		rospy.init_node("/android_socket")
-		self.button_pub = rospy.Publisher("/android_buttons", String, queue_size=10)
-		self.orientation_pub = rospy.Publisher("/android_yaw", Float64, queue_size = 10)
+		# rospy.init_node("/android_socket")
+		# self.button_pub = rospy.Publisher("/android_buttons", String, queue_size=10)
+		# self.orientation_pub = rospy.Publisher("/android_yaw", Float64, queue_size = 10)
         # rospy.Subscriber("/wii_rumble", Float32, self.set_rumble)
 
 
-	def read_socket(self, msg_bytes):
+	def read_socket(self, msg_bytes=32):
 		"""
 		reads msg_bytes bytes from self.sock
 		"""
 		while True:
 			c, addr = self.sock.accept()
 			print "got connection from ", addr
-			break
-		chunks = []
-		received_bytes = 0
-		while received_bytes < msg_bytes:
-			chunk = c.recv(min(msg_bytes - received_bytes, 2048))
-			if chunk == '':
+			buf = c.recv(64)
+			if len(buf) > 0:
+				print buf
+				c.sendall('boo')
 				break
-			chunks.append(chunk)
-			received_bytes += len(chunk)
-		msg = ''.join(chunks)
-		if msg[:3] == "Yaw":
-			received_data = float(msg[4:])
-			self.orientation_pub.publish(Float64(received_data))
 
-		elif msg[:5] == "Start":
-			self.button_pub.publish(String("Start"))
-		elif msg[:4] == "Drop":
-			self.button_pub.publish(String("Drop"))
-		elif msg[:6] == "Pickup":
-			self.button_pub.publish(String("Pickup"))
+		
 
-		print msg
+		# chunks = []
+		# received_bytes = 0
+
+		# while received_bytes < msg_bytes:
+		# 	chunk = c.recv(min(msg_bytes - received_bytes, 2048))
+		# 	if chunk == '':
+		# 		break
+		# 	chunks.append(chunk)
+		# 	received_bytes += len(chunk)
+		# msg = ''.join(chunks)
+		# print msg
+		# if msg[:3] == "Yaw":
+		# 	received_data = float(msg[4:])
+		# 	self.orientation_pub.publish(Float64(received_data))
+
+		# elif msg[:5] == "Start":
+		# 	self.button_pub.publish(String("Start"))
+		# elif msg[:4] == "Drop":
+		# 	self.button_pub.publish(String("Drop"))
+		# elif msg[:6] == "Pickup":
+		# 	self.button_pub.publish(String("Pickup"))
+		# c.sendall(b'resp5')
+		# print msg
 		c.close()
-		return msg
+		return buf
 
 
 if __name__ == "__main__":
