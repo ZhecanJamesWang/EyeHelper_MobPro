@@ -21,13 +21,13 @@
             android:layout_height="97dp"
             android:text="@string/existingRoutes"
             android:id="@+id/existingRoutes"
-            android:layout_weight="0.11" />
+            android:layout_weight="0.31" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="107dp"
             android:text="@string/startNewRoute"
             android:id="@+id/startNewRoute"
-            android:layout_weight="0.09" />
+            android:layout_weight="0.28" />
 
         <Button
             android:layout_width="match_parent"
@@ -35,14 +35,8 @@
             android:text="@string/endNewRoute"
             android:id="@+id/endNewRoute"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.37" />
+            android:layout_weight="0.57" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/point"
-            android:id="@+id/point"
-            android:layout_weight="0.44" />
     </LinearLayout>
 
     <LinearLayout
@@ -51,27 +45,20 @@
         android:layout_weight="1"
         android:orientation="vertical"
         >
+
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/next"
-            android:id="@+id/Next"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/previous"
-            android:id="@+id/Previous"
+            android:layout_height="249dp"
+            android:text="@string/Zero"
+            android:id="@+id/Zero"
             />
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/ok"
-            android:id="@+id/ok"
-            />
+            android:layout_height="wrap_content"
+            android:text="@string/point"
+            android:id="@+id/point"
+            android:layout_weight="1.08" />
+
     </LinearLayout>
 </LinearLayout>

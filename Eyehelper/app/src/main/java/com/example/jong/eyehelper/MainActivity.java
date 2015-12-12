@@ -1,5 +1,7 @@
 package com.example.jong.eyehelper;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentManager;
@@ -7,31 +9,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements UIFragment.OnFragmentInteractionListener, TextToSpeech.OnInitListener{
 
@@ -47,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     private int MY_DATA_CHECK_CODE = 0;
     public TextToSpeech repeatTTS;
     private Boolean ttsFinish = false;
-
+    private UIFragment uiFragment;
+    private Boolean routes;
+    int deleteConfirm = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         manager = getSupportFragmentManager();
         setContentView(R.layout.activity_main);
         transaction = manager.beginTransaction();
-        UIFragment uiFragment = new UIFragment();
+        uiFragment = new UIFragment();
         transaction.replace(R.id.container, uiFragment);
         transaction.commit();
 
@@ -73,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         //empty right now
     }
 
-    public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening){
+    public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening, Boolean routes){
+        this.routes = routes;
         //listen for results
         ttsFinish = false;
         HashMap<String, String> map = new HashMap<String, String>();
@@ -114,6 +105,15 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
     }
 
+
+    public void findWordFromList(ArrayList<String>  detectedWords, boolean routes) {
+        suggestedWords = detectedWords;
+        String word = suggestedWords.get(0);
+        this.routes = routes;
+        String outputSpeech = getOutputSpeech(word);
+        speakAndListen(outputSpeech, false, true, routes);
+    }
+
     /**
      * onActivityResults handles:
      *  - retrieving results of speech recognition listening
@@ -122,22 +122,17 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //check speech recognition result
+        Log.d(TAG, "onAcitivityResult");
         String word = "haha";
         if (requestCode == VR_REQUEST && resultCode == RESULT_OK)
         {
-
+            Log.d(TAG, "voice recognition result entry");
             //store the returned word list as an ArrayList
             ArrayList<String>  detectedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
             Log.d("WHAT YOU SAY", detectedWords.get(0));
             if (firstTIme){
-                suggestedWords = detectedWords;
-                //set the retrieved list to display in the ListView using an ArrayAdapter
-
-                Log.d("onActivityResult", detectedWords.get(0));
-                word = suggestedWords.get(0);
-
-                String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
-                speakAndListen(outputSpeech, false, true);
+                findWordFromList(detectedWords, false);
             }
             else{
                 suggestedCommand = detectedWords;
@@ -146,13 +141,21 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     String tmpCommand = suggestedWords.get(0);
                     suggestedWords.clear();
                     suggestedWords.add(tmpCommand);
-                    Toast.makeText(getApplicationContext(), "you choose " + suggestedWords.get(0), Toast.LENGTH_SHORT).show();
-                    Log.d(TAG,"YOU SAY YES!");
+                    Toast.makeText(getApplicationContext(), "you choose " + tmpCommand, Toast.LENGTH_SHORT).show();
+                    Log.d("YOU SAY YES!", tmpCommand);
+                    String outSpeech = "You choose " + tmpCommand;;
+                    speakAndListen(outSpeech, true, false, routes);
+                    if(routes){
+                        uiFragment.startNavigatingRoute(tmpCommand);
+                    }
+                    else{
+                        uiFragment.addLandmarks(tmpCommand);
+                    }
 
                 }
                 else if (suggestedCommand.get(0).equals("cancel")){
                     String outputSpeech = "You cancel the service";
-                    speakAndListen(outputSpeech, false, false);
+                    speakAndListen(outputSpeech, false, false, routes);
 
                 }
                 else if (suggestedCommand.get(0).equals("next")){
@@ -160,22 +163,60 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     {
                         suggestedWords.remove(0);
                         word = suggestedWords.get(0);
-                        String outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
-                        speakAndListen(outputSpeech, false, true);
+                        String outputSpeech = getOutputSpeech(word);
+                        speakAndListen(outputSpeech, false, true, routes);
                     }
                     catch (Exception exception)
                     {
+                        if (routes)
+                        {
+                            String outputSpeech = "Sorry, there is not route left any more";
+                            speakAndListen(outputSpeech, true, false, routes);
+                        }
+                        else{
+
                         String outputSpeech = "Sorry, please try to speak again!";
-                        speakAndListen(outputSpeech, true, true);
+                        speakAndListen(outputSpeech, true, true, routes);
+
+                        }
+
                     }
 
 
-
+                }
+                else if (suggestedCommand.get(0).equals("delete")){
+                    if (deleteConfirm >= 1){
+                        SharedPreferences pref;
+                        SharedPreferences.Editor editor;
+                        pref = uiFragment.lookforDataFiles(suggestedWords.get(0));
+                        Log.d("pref", pref.toString());
+                        editor = pref.edit();
+                        editor.clear();
+                        editor.commit();
+                        deleteConfirm =0;
+                        String outputSpeech = "You successfully delete the route!";
+                        speakAndListen(outputSpeech, false, false, routes);
+                    }
+                    else {
+                        deleteConfirm ++;
+                        String outputSpeech = "Do you want to delete this route? If yes, please say the word, delete again";
+                        speakAndListen(outputSpeech, false, true, routes);
+                    }
+                }
+                else if (suggestedCommand.get(0).equals("reverse")){
+                    Collections.reverse(suggestedWords);
+                    findWordFromList(suggestedWords, true);
                 }
                 else{
                     word = suggestedWords.get(0);
-                    String outputSpeech = "Sorry. I dont get it. Did you say" + word + " before ?" + " Please answer yes, next or cancel";
-                    speakAndListen(outputSpeech, false, true);
+                    String outputSpeech;
+                    if (routes){
+                        outputSpeech = "Sorry. I don't get it. Did you want to choose the route, " + word + " before ?" + " Please answer yes, next or cancel";
+                    }
+                    else{
+                        outputSpeech = "Sorry. I don't get it. Did you say" + word + " before ?" + " Please answer yes, next or cancel";
+                    }
+                    speakAndListen(outputSpeech, false, true, routes);
                 }
 
 
@@ -202,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         super.onActivityResult(requestCode, resultCode, data);
 
         }
+
 
     private void setTtsListener() {
         if (Build.VERSION.SDK_INT >= 15)
@@ -250,12 +292,23 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     }
 
 
+    public String getOutputSpeech(String word){
+        String outputSpeech;
+        if (routes){
+            outputSpeech = "Do you want to choose the route, " + word + "?" + "Please answer yes, next or cancel";
+        }
+        else{
+            outputSpeech = "Did you say" + word + "?" + "Please answer yes, next or cancel";
+        }
+        return outputSpeech;
+    }
+
     public void onInit(int initStatus) {
         //if successful, set locale
         if (initStatus == TextToSpeech.SUCCESS)
             repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
             String outputSpeech = "Welcome to Eye Helper project";
-            speakAndListen(outputSpeech, false, false);
+            speakAndListen(outputSpeech, false, false, routes);
             Log.d(TAG,"onInit");
 
     }

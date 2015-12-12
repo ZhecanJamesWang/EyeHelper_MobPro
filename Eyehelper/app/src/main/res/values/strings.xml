@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">Eyehelper</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
     <string name="existingRoutes">Existing Routs</string>
     <string name="startNewRoute">Start New Route</string>
-    <string name="ok">OK</string>
+    <string name="Zero">Zero</string>
     <string name = "endNewRoute">End New Route </string>>
     <string name = "point">Point </string>>
 
