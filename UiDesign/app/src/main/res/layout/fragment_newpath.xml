@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.example.shruti.uidesign.NewPath"
+    android:id="@+id/frag_newpath"
+    android:contextClickable="true">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/newpath_btn"
+        android:background="#aaef5da4"
+        android:text="LOLOL"
+        android:textSize="@dimen/abc_action_bar_default_height_material" />
+
+</FrameLayout>
