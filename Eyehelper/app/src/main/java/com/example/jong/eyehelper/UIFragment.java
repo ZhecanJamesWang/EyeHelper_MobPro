@@ -26,7 +26,7 @@ import java.util.HashMap;
  * Use the {@link UIFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UIFragment extends Fragment {
+public class UIFragment extends Fragment{
     private OnFragmentInteractionListener mListener;
     public SensorHandler sensorHandler;
     private MainActivity mainActivity;
@@ -35,6 +35,8 @@ public class UIFragment extends Fragment {
     private String[] prefList;
     private ArrayList<String> wordlist = new ArrayList<String>();
     public String currentPres;
+    public SocketCallback socketCallback;
+
 
     public static UIFragment newInstance(String param1, String param2) {
         UIFragment fragment = new UIFragment();
@@ -49,6 +51,12 @@ public class UIFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity)getActivity();
+        socketCallback = new SocketCallback() {
+            @Override
+            public void onTaskCompleted(String receivedData) {
+                Log.d("receivedData", receivedData);
+            }
+        };
 
     }
 
@@ -57,7 +65,7 @@ public class UIFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView ");
 
-        sensorHandler = new SensorHandler(getActivity());
+        sensorHandler = new SensorHandler(getActivity(), socketCallback);
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
 
         Button existingRoutes = (Button) uiLayout.findViewById(R.id.existingRoutes);
@@ -92,6 +100,11 @@ public class UIFragment extends Fragment {
         startNewRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String listForAsync[];
+                String messageText = "cmd new";
+                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                new SocketAsync(socketCallback).execute(listForAsync);
+
                 String latitude = String.valueOf(getLatitude());
                 String longitude = String.valueOf(getLongitude());
                 String [] allpreflist = AllSharePref();
@@ -115,9 +128,9 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String listForAsync[];
-                String messageText = "cmd new";
+                String messageText = "cmd end";
                 listForAsync = new String[] {sensorHandler.ipAddress, messageText};
-                new SocketAsync().execute(listForAsync);
+                new SocketAsync(socketCallback).execute(listForAsync);
                 Log.d("end new route", "clicked");
                 String outputSpeech = "Finishing this route. What do you want the last landmark name to be?";
                 mainActivity.speakAndListen(outputSpeech, true, true, false);
@@ -132,7 +145,7 @@ public class UIFragment extends Fragment {
                 String listForAsync[];
                 String messageText = "cmd zero";
                 listForAsync = new String[] {sensorHandler.ipAddress, messageText};
-                new SocketAsync().execute(listForAsync);
+                new SocketAsync(socketCallback).execute(listForAsync);
             }
         });
 
@@ -142,12 +155,12 @@ public class UIFragment extends Fragment {
                 Log.d("point", "clicked");
                 Double x = getX();
                 Double y = getY();
-                String point = x.toString()+","+y.toString()+",";
+                String point = x.toString()+","+y.toString()+";";
                 addToDatabase("point", point, true);
                 String listForAsync[];
                 String messageText = "cmd point";
                 listForAsync = new String[] {sensorHandler.ipAddress, messageText};
-                new SocketAsync().execute(listForAsync);
+                new SocketAsync(socketCallback).execute(listForAsync);
 
             }
         });
@@ -228,11 +241,20 @@ public class UIFragment extends Fragment {
     }
     public void startNavigatingRoute(String routes)
     {
-        SharedPreferences pref = lookforDataFiles(routes);
-        String point = pref.getString("point", null);
+//        SharedPreferences pref = lookforDataFiles(routes);
+//        String point = pref.getString("point", null);
+        String listForAsync[];
+        String messageText = "cmd nav";
+        listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+        new SocketAsync(socketCallback).execute(listForAsync);
+        String pointsString = "1.0,2.0;3.0,4.0;5.0,6.0;7.0,8.0";
+        String [] point = pointsString.split(";");
+        for(int i=0; i < point.length; i++){
+            Log.d("point", point[i]);
+            listForAsync = new String[] {sensorHandler.ipAddress, point[i]};
+            new SocketAsync(socketCallback).execute(listForAsync);
+        }
         mainActivity.speakAndListen("start navigating the route: " + routes, true, false, true);
-        Log.d("point", point);
-
 
     }
     public SharedPreferences lookforDataFiles(String routes) {
@@ -309,6 +331,7 @@ public class UIFragment extends Fragment {
         double y = 2.000;
         return y;
     }
+
 
 
 

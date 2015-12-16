@@ -22,11 +22,12 @@ public class SensorHandler implements SensorEventListener{
     private static final int FROM_RADS_TO_DEGS = -57;
     private boolean firstTime = true;
     private float offset;
+    private SocketCallback socketCallback;
 
 
-
-    public SensorHandler(Context context){
+    public SensorHandler(Context context, SocketCallback socketCallback){
         try {
+            this.socketCallback = socketCallback;
             mSensorManager = (SensorManager) context.getSystemService(Activity.SENSOR_SERVICE);
             mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
             mSensorManager.registerListener(this, mRotationSensor, SENSOR_DELAY);
@@ -78,7 +79,7 @@ public class SensorHandler implements SensorEventListener{
         String messageText = "Yaw" + " " + Float.valueOf(yaw).toString();
         String listForAsync[];
         listForAsync = new String[] {ipAddress, messageText};
-        new SocketAsync().execute(listForAsync);
+        new SocketAsync(socketCallback).execute(listForAsync);
 
     }
 
