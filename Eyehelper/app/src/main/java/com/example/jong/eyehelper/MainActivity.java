@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     private int MY_DATA_CHECK_CODE = 0;
     public TextToSpeech repeatTTS;
     private Boolean ttsFinish = false;
-    private UIFragment uiFragment;
+    public UIFragment uiFragment;
     private Boolean routes;
     int deleteConfirm = 0;
 
