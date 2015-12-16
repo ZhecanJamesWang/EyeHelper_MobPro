@@ -123,6 +123,8 @@ class EchoSocket(object):
 			elif command_name == "end":
 				self.isOnTrail = False
 				self.trail == []
+				response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
+				return response
 			elif command_name == "point":
 				# self.drop_breadcrumb() # commented out b/c handled by phone.
 				print "point added"
@@ -154,6 +156,7 @@ class EchoSocket(object):
 		self.x = msg.pose.position.x
 		self.y = msg.pose.position.y
 		self.z = msg.pose.position.z
+		print "received from tango: xyz: ", str(self.x)[:3], str(self.y)[:3]
 		self.pose_timestamp = msg.header.stamp
 
 	def process_angle(self, msg):
@@ -161,6 +164,8 @@ class EchoSocket(object):
 		writes angle info to class variables.
 		"""
 		self.yaw = msg.data[2]
+		print "received from tango: yaw: ", str(self.yaw)
+
 		self.pitch = msg.data[1]
 		self.roll = msg.data[0]
 
@@ -219,3 +224,8 @@ if __name__ == "__main__":
 	es = EchoSocket()
 	while True:
 		es.read_socket(32)
+
+		"""
+ived:  Yaw 4.4265276E-4 	Sending:  nul
+Received:  Yaw 4.4
+		"""
