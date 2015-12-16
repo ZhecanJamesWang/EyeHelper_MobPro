@@ -56,7 +56,7 @@ class EchoSocket(object):
 
 		#============ Misc. parameters, settings, and controls=========
 		self.isOn = True
-		self.isOnTrail = True #for testing only
+		self.isOnTrail = False
 		self.justArrived = False
 		self.zero_yaw = 0
 		self.phone_yaw = 0
@@ -82,11 +82,12 @@ class EchoSocket(object):
 
 	def handle_socket_input(self, m):
 		m_l = str(m).lower()
-		mww = ''.join(c for c in m_l if c.isalnum() or c in [' ', '-', '.'])
+		mww = ''.join(c for c in m_l if c.isalnum() or c in [' ', '-', '.', ','])
 		message = string.strip(mww)
+		response = "nul" # default
 		# print repr(message)
 		if len(message) < 3:
-			return "nul"
+			return response
 		header = message[:3]
 		# print header, '\t', repr(header)
 
@@ -105,15 +106,15 @@ class EchoSocket(object):
 					response = response + "| arrived"
 					self.justArrived = False
 				return response
-			else:
-				response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
-				return response
+			# else:
+			# 	response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
+			# 	return response
 
 		elif header == "cmd":
 			command_name = message[4:]
 			print "Received command/keypress: ", command_name
-			print '****************',
-			print repr(message), repr(command_name)
+			# print '****************',
+			# print repr(message), repr(command_name)
 			if command_name == "new":
 				self.isOnTrail = False
 				self.trail = []
@@ -123,13 +124,27 @@ class EchoSocket(object):
 				self.isOnTrail = False
 				self.trail == []
 			elif command_name == "point":
-				self.drop_breadcrumb()
+				# self.drop_breadcrumb() # commented out b/c handled by phone.
 				print "point added"
+				response = "xyz" + ',' + str(self.x) + ',' + str(self.y) + ',' + str(self.z) # Might be too long - if we need to, we can truncate/round these.
+				self.justArrived = True # temp; testing.
 			elif command_name == "zero":
 				self.zero()
 			elif command_name == "nav":
 				self.isOnTrail = True
-		return "nul"
+				t = command_name[4:]
+				tlist = t.split(',')
+				if len(tlist) < 2:
+					return response
+				new_point = (tlist[0], tlist[1], 0.0) # assuming constant z-vals for now.
+				self.trail.append(new_point)
+				print "Current trail: ", self.trail
+			elif command_name == "startup":
+				self.trail = []
+				self.isOnTrail = False
+				self.isOn = True
+				self.justArrived = False
+		return response
 
 	#================ ROS Message - Handler functions ============
 	def process_pose(self, msg):
@@ -167,6 +182,12 @@ class EchoSocket(object):
 			print "new target"
 			self.isOnTrail = True
 			self.justArrived = True
+
+	def drop_breadcrumb(self):
+		current_point = (self.x, self.y, self.z)
+		self.trail.append(current_point)
+		print "droped breadcrumb"
+		self.onTrail = False
 
 
 	def refresh_all(self):
