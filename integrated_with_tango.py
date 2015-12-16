@@ -34,8 +34,10 @@ class EchoSocket(object):
 		#============ ROS setup, to listen to the Tango =================
 
 		rospy.init_node("sandroid_socket")
+		print "node initiated"
 		rospy.Subscriber('/tango_pose', PoseStamped, self.process_pose)
 		rospy.Subscriber('/tango_angles', Float64MultiArray, self.process_angle)
+		print "subscribed to ros topics"
 		self.rospack = rospkg.RosPack();
 		self.tf = TransformListener()
 
@@ -74,7 +76,7 @@ class EchoSocket(object):
 			if len(buf) > 0:
 				self.refresh_all()
 				response_to_send = self.handle_socket_input(buf)
-				print "Received: ", str(buf), '\t', "Sending: ", response_to_send
+				# print "Received: ", str(buf), '\t', "Sending: ", response_to_send
 				c.sendall(response_to_send)
 				break
 		c.close()
@@ -112,7 +114,7 @@ class EchoSocket(object):
 
 		elif header == "cmd":
 			command_name = message[4:]
-			print "Received command/keypress: ", command_name
+			# print "Received command/keypress: ", command_name
 			# print '****************',
 			# print repr(message), repr(command_name)
 			if command_name == "new":
@@ -163,7 +165,7 @@ class EchoSocket(object):
 		"""
 		writes angle info to class variables.
 		"""
-		self.yaw = msg.data[2]
+		self.yaw = msg.data[2] * 57.3
 		print "received from tango: yaw: ", str(self.yaw)
 
 		self.pitch = msg.data[1]
@@ -191,7 +193,7 @@ class EchoSocket(object):
 	def drop_breadcrumb(self):
 		current_point = (self.x, self.y, self.z)
 		self.trail.append(current_point)
-		print "droped breadcrumb"
+		print "dropped breadcrumb"
 		self.onTrail = False
 
 
