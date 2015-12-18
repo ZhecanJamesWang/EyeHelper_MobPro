@@ -77,7 +77,7 @@ class EchoSocket(object):
 			if len(buf) > 0:
 				self.refresh_all()
 				response_to_send = self.handle_socket_input(buf)
-				# print "Received: ", str(buf), '\t', "Sending: ", response_to_send
+				print "Received: ", str(buf), '\t', "Sending: ", response_to_send
 				c.sendall(response_to_send)
 				break
 		c.close()

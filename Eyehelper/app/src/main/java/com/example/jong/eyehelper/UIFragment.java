@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
+import android.os.Handler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,9 +26,7 @@ import java.util.ArrayList;
  * Use the {@link UIFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UIFragment extends Fragment{
-    private OnFragmentInteractionListener mListener;
-    public SensorHandler sensorHandler;
+public class UIFragment extends Fragment implements Runnable{
     private MainActivity mainActivity;
 
     private String TAG = "UIFragment";
@@ -35,6 +34,15 @@ public class UIFragment extends Fragment{
     private ArrayList<String> wordlist = new ArrayList<String>();
     public String currentPres;
     public SocketCallback socketCallback;
+
+    private OnFragmentInteractionListener mListener;
+    private String ipAddress = "192.168.32.168"; // REPLACE WITH WHATEVER THE IP ADDRESS IS OF THE COMPUTER RUNNING THE SERVER! also make sure they're both on the same network, preferably olin-robotics b/c that one handles IP addresses nicer.
+    private static final int FROM_RADS_TO_DEGS = 57;
+    protected Handler handler;
+    private Context context;
+    private Orientation orientation;
+    private float[] vOrientation = new float[3];
+    protected Runnable runable;
 
 
     public static UIFragment newInstance(String param1, String param2) {
@@ -49,6 +57,7 @@ public class UIFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
         mainActivity = (MainActivity)getActivity();
         socketCallback = new SocketCallback() {
             @Override
@@ -83,7 +92,6 @@ public class UIFragment extends Fragment{
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView ");
 
-        sensorHandler = new SensorHandler(getActivity(), socketCallback);
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
 
         Button existingRoutes = (Button) uiLayout.findViewById(R.id.existingRoutes);
@@ -91,7 +99,7 @@ public class UIFragment extends Fragment{
         Button endNewRoute = (Button) uiLayout.findViewById(R.id.endNewRoute);
         Button Zero = (Button) uiLayout.findViewById(R.id.Zero);
         Button point = (Button) uiLayout.findViewById(R.id.point);
-
+        reset(socketCallback);
 
         existingRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +129,7 @@ public class UIFragment extends Fragment{
             public void onClick(View v) {
                 String listForAsync[];
                 String messageText = "cmd new";
-                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                listForAsync = new String[] {ipAddress, messageText};
                 new SocketAsync(socketCallback).execute(listForAsync);
 
                 String latitude = String.valueOf(getLatitude());
@@ -150,7 +158,7 @@ public class UIFragment extends Fragment{
             public void onClick(View v) {
                 String listForAsync[];
                 String messageText = "cmd end";
-                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                listForAsync = new String[] {ipAddress, messageText};
                 new SocketAsync(socketCallback).execute(listForAsync);
                 Log.d("end new route", "clicked");
                 String outputSpeech = "Finishing this route. What do you want the last landmark name to be?";
@@ -168,7 +176,7 @@ public class UIFragment extends Fragment{
                 Log.d("Ok", "clicked");
                 String listForAsync[];
                 String messageText = "cmd zero";
-                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                listForAsync = new String[] {ipAddress, messageText};
                 new SocketAsync(socketCallback).execute(listForAsync);
             }
         });
@@ -186,13 +194,8 @@ public class UIFragment extends Fragment{
                 Log.d("point", "clicked");
                 String listForAsync[];
                 String messageText = "cmd point";
-                listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+                listForAsync = new String[] {ipAddress, messageText};
                 new SocketAsync(socketCallback).execute(listForAsync);
-
-//                Double x = getX();
-//                Double y = getY();
-//                String point = x.toString()+","+y.toString()+";";
-//                addToDatabase("point", point, true);
 
 
             }
@@ -282,7 +285,7 @@ public class UIFragment extends Fragment{
         String listForAsync[];
         String messageText = "cmd nav";
         Log.d("satr nav", messageText);
-        listForAsync = new String[] {sensorHandler.ipAddress, messageText};
+        listForAsync = new String[] {ipAddress, messageText};
         new SocketAsync(socketCallback).execute(listForAsync);
         SharedPreferences pref = routetoDatafile(routes);
         Log.d("pref", pref.toString());
@@ -293,7 +296,7 @@ public class UIFragment extends Fragment{
             String[] point = pointsString.split(";");
             for (int i = 0; i < point.length; i++) {
                 Log.d("point", point[i]);
-                listForAsync = new String[]{sensorHandler.ipAddress, point[i]};
+                listForAsync = new String[]{ipAddress, point[i]};
                 new SocketAsync(socketCallback).execute(listForAsync);
             }
         }
@@ -370,6 +373,39 @@ public class UIFragment extends Fragment{
     public double getLongitude(){
         double longitude = 2.000;
         return longitude;
+    }
+
+    @Override
+    public void run() {
+
+    }
+
+    private void reset(final SocketCallback cb)
+    {
+        orientation = new GyroscopeOrientation(context);
+        Log.d("reset called","aaaaaaaa");
+        handler = new Handler();
+
+        runable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                handler.postDelayed(this, 100);
+                vOrientation = orientation.getOrientation();
+                update(vOrientation, cb);
+
+            }
+        };
+    }
+
+    private void update(float[] vectors, SocketCallback cb) {
+        float yaw = vectors[0] * FROM_RADS_TO_DEGS;
+        String messageText = "Yaw" + " " + Float.valueOf(yaw).toString();
+        String listForAsync[];
+        listForAsync = new String[] {ipAddress, messageText};
+        new SocketAsync(cb).execute(listForAsync);
+
     }
 
 }
