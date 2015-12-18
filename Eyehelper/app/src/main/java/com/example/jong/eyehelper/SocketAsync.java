@@ -33,9 +33,6 @@ public class SocketAsync extends AsyncTask<String, Void, String> {
 
             dataOutputStream.writeUTF(messageToSend);
 
-
-
-            Log.d("socket_info", "be receive");
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";

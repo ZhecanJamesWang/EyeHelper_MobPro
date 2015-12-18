@@ -5,18 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +52,14 @@ public class UIFragment extends Fragment{
             @Override
             public void onTaskCompleted(String receivedData) {
                 Log.d("receivedData", receivedData);
+                String [] response = receivedData.split(",");
+                if (response[0].equals("xyz")){
+                    String x = response[1];
+                    String y = response[2];
+                    String point = x+","+y+";";
+                    Log.d("onTaskCompleted","saving "+point);
+                    addToDatabase("point", point, true);
+                }
             }
         };
 
@@ -78,17 +83,18 @@ public class UIFragment extends Fragment{
         existingRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wordlist.clear();
                 String outSpeech = "The existing routes are as followings: ";
-                mainActivity.speakAndListen(outSpeech, true, false, true);
+                mainActivity.speakAndListen(outSpeech, true, false, true, null);
                 Log.d("existing routes", "clicked");
                 prefList = AllSharePref();
                 Log.d("Data File Length", String.valueOf(prefList.length));
                 for (int i = 0; i<prefList.length; i++)
                 {
-
-                    outSpeech = getLandmarks(i);
+                    Log.d("index", String.valueOf(i));
+                    outSpeech = datafiletoRoute(prefList[i]);
                     if (outSpeech != null){
-                        Log.d("the routes", outSpeech);
+//                        Log.d("the routes", outSpeech);
                         wordlist.add(outSpeech);
                     }
                 }
@@ -108,18 +114,20 @@ public class UIFragment extends Fragment{
                 String latitude = String.valueOf(getLatitude());
                 String longitude = String.valueOf(getLongitude());
                 String [] allpreflist = AllSharePref();
-                int counter = 0;
+                int max = 0;
                 for (int i =0; i<allpreflist.length; i++){
                     if ((allpreflist[i].contains(latitude))&& (allpreflist[i].contains(longitude))){
-                        counter ++;
+                        String[] tmpArray = allpreflist[i].split(",");
+                        int tmp = Integer.parseInt(tmpArray[2]);
+                        if (tmp > max){max = tmp;}
                     }
                 }
 
-                currentPres = latitude + "," + longitude + "," + String.valueOf(counter+1);
+                currentPres = latitude + "," + longitude + "," + String.valueOf(max+1);
                 Log.d("currentPres", currentPres.toString());
                 Log.d("start new route", "clicked");
                 String outputSpeech = "Starting a new route. What do you want the first landmark name to be?";
-                mainActivity.speakAndListen(outputSpeech, true, true, false);
+                mainActivity.speakAndListen(outputSpeech, true, true, false, null);
             }
         });
 
@@ -133,7 +141,10 @@ public class UIFragment extends Fragment{
                 new SocketAsync(socketCallback).execute(listForAsync);
                 Log.d("end new route", "clicked");
                 String outputSpeech = "Finishing this route. What do you want the last landmark name to be?";
-                mainActivity.speakAndListen(outputSpeech, true, true, false);
+//                String route = datafiletoRoute(currentPres);
+//                Log.d("endNewRoute", route);
+                mainActivity.speakAndListen(outputSpeech, true, true, false, null);
+//                startNavigatingRoute(route);
             }
         });
 
@@ -153,14 +164,16 @@ public class UIFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d("point", "clicked");
-                Double x = getX();
-                Double y = getY();
-                String point = x.toString()+","+y.toString()+";";
-                addToDatabase("point", point, true);
                 String listForAsync[];
                 String messageText = "cmd point";
                 listForAsync = new String[] {sensorHandler.ipAddress, messageText};
                 new SocketAsync(socketCallback).execute(listForAsync);
+
+//                Double x = getX();
+//                Double y = getY();
+//                String point = x.toString()+","+y.toString()+";";
+//                addToDatabase("point", point, true);
+
 
             }
         });
@@ -209,24 +222,23 @@ public class UIFragment extends Fragment{
 
     public String [] AllSharePref(){
         File prefsdir = new File(getActivity().getApplicationInfo().dataDir,"shared_prefs");
+        Log.d("pref_file_path", prefsdir.toString());
         if(prefsdir.exists() && prefsdir.isDirectory()){
             prefList = prefsdir.list();
             for (int i=0; i < prefList.length; i++){
                 prefList[i] = prefList[i].replace(".xml", "");
-                Log.d("prefList "+String.valueOf(i), prefList[i]);
+//                Log.d("prefList "+String.valueOf(i), prefList[i]);
             }
             Log.d(TAG, String.valueOf(prefList));
         }
         return prefList;
     }
 
-    public String getLandmarks(int index)
+    public String datafiletoRoute(String prefName)
     {
-        Log.d("index", String.valueOf(index));
-        String prefName = prefList[index];
         SharedPreferences pref = getActivity().getSharedPreferences(prefName, Context.MODE_PRIVATE);
         String outSpeech;
-        if (pref.contains("landmark1"))
+        if (pref.contains("landmark1") && pref.contains("landmark2"))
         {
             String landmark1 = pref.getString("landmark1", null);
             String landmark2 = pref.getString("landmark2", null);
@@ -234,6 +246,11 @@ public class UIFragment extends Fragment{
         }
         else
         {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.clear();
+            editor.commit();
+            File file = new File(getActivity().getApplicationInfo().dataDir,"shared_prefs/"+prefName+".xml");
+            file.delete();
             outSpeech = null;
         }
 
@@ -241,37 +258,45 @@ public class UIFragment extends Fragment{
     }
     public void startNavigatingRoute(String routes)
     {
-//        SharedPreferences pref = lookforDataFiles(routes);
-//        String point = pref.getString("point", null);
+
         String listForAsync[];
         String messageText = "cmd nav";
+        Log.d("satr nav", messageText);
         listForAsync = new String[] {sensorHandler.ipAddress, messageText};
         new SocketAsync(socketCallback).execute(listForAsync);
-        String pointsString = "1.0,2.0;3.0,4.0;5.0,6.0;7.0,8.0";
-        String [] point = pointsString.split(";");
-        for(int i=0; i < point.length; i++){
-            Log.d("point", point[i]);
-            listForAsync = new String[] {sensorHandler.ipAddress, point[i]};
-            new SocketAsync(socketCallback).execute(listForAsync);
+        SharedPreferences pref = routetoDatafile(routes);
+        Log.d("pref", pref.toString());
+        String pointsString = pref.getString("point", null);
+        try {
+            Log.d("pointString", pointsString);
+//        String pointsString = "1.0,2.0;3.0,4.0;5.0,6.0;7.0,8.0";
+            String[] point = pointsString.split(";");
+            for (int i = 0; i < point.length; i++) {
+                Log.d("point", point[i]);
+                listForAsync = new String[]{sensorHandler.ipAddress, point[i]};
+                new SocketAsync(socketCallback).execute(listForAsync);
+            }
         }
-        mainActivity.speakAndListen("start navigating the route: " + routes, true, false, true);
+        catch (Exception e){
+            Log.d("Exception", e.toString());
+        }
+        mainActivity.speakAndListen("start navigating the route: " + routes, true, false, true, null);
 
     }
-    public SharedPreferences lookforDataFiles(String routes) {
+    public SharedPreferences routetoDatafile(String routes) {
         routes = routes.replace("from ", "");
-        routes = routes.replace(" ","");
-        String [] landmarks = routes.split("to");
+        String [] landmarks = routes.split(" to ");
         String[] allpreflist = AllSharePref();
         for (int i = 0; i < allpreflist.length; i++) {
             SharedPreferences pref = getActivity().getSharedPreferences(allpreflist[i], Context.MODE_PRIVATE);
-                if (pref.contains("landmark1")&&pref.contains("landmarks2")){
+                if (pref.contains("landmark1")&&pref.contains("landmark2")){
                 String landmark1 = pref.getString("landmark1", null);
                 String landmark2 = pref.getString("landmark2", null);
                 Log.d("landmark1", landmark1);
                 Log.d("landmark2", landmark2);
                 Log.d("landmarks[0]",landmarks[0]);
                 Log.d("landmarks[1]",landmarks[1]);
-                if (landmark1.equals(landmarks[0]) && landmark1.equals(landmarks[1])) {
+                if ((landmarks[0].contains(landmark1)) && landmarks[1].contains(landmark2)) {
                     Log.d(TAG, "find the pref");
                     return pref;
                 }
@@ -292,13 +317,15 @@ public class UIFragment extends Fragment{
         else if(!pref.contains("landmark2")){
             addToDatabase("landmark2", landmarkName, false);
             Log.d("landmark2", landmarkName);
-        }
-        else if(!pref.contains("landmark2")){
-            addToDatabase("landmark3", landmarkName, false);
-        }
+            Log.d("reaching ", "endNewRoute Navigation");
+            String route = datafiletoRoute(currentPres);
+            String outputSpeech = "Do you want to start navigation this route?";
+            mainActivity.speakAndListen(outputSpeech, false, true, false, route);
+            }
         else {
             Log.d(TAG, "too many landmarks");
         }
+
     }
     public void addToDatabase(String key, String value, Boolean recoveryPref){
         SharedPreferences pref;
@@ -312,6 +339,7 @@ public class UIFragment extends Fragment{
             tmp = "";
         }
         value = tmp + value;
+        Log.d("addint to database", key+":"+value);
         editor.putString(key, value);
         editor.commit();
         }
@@ -323,16 +351,5 @@ public class UIFragment extends Fragment{
         double longitude = 2.000;
         return longitude;
     }
-    public double getX(){
-        double x = 2.000;
-        return x;
-    }
-    public double getY(){
-        double y = 2.000;
-        return y;
-    }
-
-
-
 
 }

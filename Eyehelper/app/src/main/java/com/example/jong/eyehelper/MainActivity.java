@@ -1,6 +1,5 @@
 package com.example.jong.eyehelper;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
@@ -10,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     public UIFragment uiFragment;
     private Boolean routes;
     int deleteConfirm = 0;
+    private String endNavRoute = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +64,9 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         //empty right now
     }
 
-    public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening, Boolean routes){
+    public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening, Boolean routes, String endNavRoute){
         this.routes = routes;
+        this.endNavRoute = endNavRoute;
         //listen for results
         ttsFinish = false;
         HashMap<String, String> map = new HashMap<String, String>();
@@ -111,7 +113,12 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         String word = suggestedWords.get(0);
         this.routes = routes;
         String outputSpeech = getOutputSpeech(word);
-        speakAndListen(outputSpeech, false, true, routes);
+        if(endNavRoute!=null){
+            speakAndListen(outputSpeech, false, true, routes, endNavRoute);
+        }
+        else{
+            speakAndListen(outputSpeech, false, true, routes, null);
+        }
     }
 
     /**
@@ -143,11 +150,24 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     suggestedWords.add(tmpCommand);
                     Toast.makeText(getApplicationContext(), "you choose " + tmpCommand, Toast.LENGTH_SHORT).show();
                     Log.d("YOU SAY YES!", tmpCommand);
-                    String outSpeech = "You choose " + tmpCommand;;
-                    speakAndListen(outSpeech, true, false, routes);
+                    if (endNavRoute == null) {
+                        String outSpeech = "You choose " + tmpCommand;
+                        ;
+//                    if (endNavRoute != null){
+                        speakAndListen(outSpeech, true, false, routes, endNavRoute);
+                    }
+//                    }
+//                    else{
+//                        speakAndListen(outSpeech, true, false, routes, null);
+//                    }
                     if(routes){
                         uiFragment.startNavigatingRoute(tmpCommand);
                     }
+                    else if(endNavRoute != null)
+                    {
+                        tmpCommand = endNavRoute;
+                        uiFragment.startNavigatingRoute(tmpCommand);}
+
                     else{
                         uiFragment.addLandmarks(tmpCommand);
                     }
@@ -155,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                 }
                 else if (suggestedCommand.get(0).equals("cancel")){
                     String outputSpeech = "You cancel the service";
-                    speakAndListen(outputSpeech, false, false, routes);
+                    speakAndListen(outputSpeech, false, false, routes, null);
 
                 }
                 else if (suggestedCommand.get(0).equals("next")){
@@ -164,19 +184,19 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                         suggestedWords.remove(0);
                         word = suggestedWords.get(0);
                         String outputSpeech = getOutputSpeech(word);
-                        speakAndListen(outputSpeech, false, true, routes);
+                        speakAndListen(outputSpeech, false, true, routes, null);
                     }
                     catch (Exception exception)
                     {
                         if (routes)
                         {
                             String outputSpeech = "Sorry, there is not route left any more";
-                            speakAndListen(outputSpeech, true, false, routes);
+                            speakAndListen(outputSpeech, true, false, routes, null);
                         }
                         else{
 
                         String outputSpeech = "Sorry, please try to speak again!";
-                        speakAndListen(outputSpeech, true, true, routes);
+                        speakAndListen(outputSpeech, true, true, routes, null);
 
                         }
 
@@ -188,19 +208,22 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     if (deleteConfirm >= 1){
                         SharedPreferences pref;
                         SharedPreferences.Editor editor;
-                        pref = uiFragment.lookforDataFiles(suggestedWords.get(0));
-                        Log.d("pref", pref.toString());
+                        pref = uiFragment.routetoDatafile(suggestedWords.get(0));
+                        Log.d("delete pref", pref.toString());
                         editor = pref.edit();
                         editor.clear();
                         editor.commit();
+                        File file = new File(getApplicationInfo().dataDir,"shared_prefs/"+pref.toString()+".xml");
+                        file.delete();
+
                         deleteConfirm =0;
                         String outputSpeech = "You successfully delete the route!";
-                        speakAndListen(outputSpeech, false, false, routes);
+                        speakAndListen(outputSpeech, false, false, routes, null);
                     }
                     else {
                         deleteConfirm ++;
                         String outputSpeech = "Do you want to delete this route? If yes, please say the word, delete again";
-                        speakAndListen(outputSpeech, false, true, routes);
+                        speakAndListen(outputSpeech, false, true, routes, null);
                     }
                 }
                 else if (suggestedCommand.get(0).equals("reverse")){
@@ -216,7 +239,10 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     else{
                         outputSpeech = "Sorry. I don't get it. Did you say" + word + " before ?" + " Please answer yes, next or cancel";
                     }
-                    speakAndListen(outputSpeech, false, true, routes);
+                    if (endNavRoute != null){
+                        outputSpeech = "Sorry, I dont get it. Do you want to start navigation this route?";
+                        speakAndListen(outputSpeech, false, true, false, endNavRoute);
+                    }
                 }
 
 
@@ -308,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         if (initStatus == TextToSpeech.SUCCESS)
             repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
             String outputSpeech = "Welcome to Eye Helper project";
-            speakAndListen(outputSpeech, false, false, routes);
+            speakAndListen(outputSpeech, false, false, routes, null);
             Log.d(TAG,"onInit");
 
     }

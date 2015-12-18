@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Basic echo server - prints text sent from an android, hopefully.
 the person who wrote "https://docs.python.org/2/howto/sockets.html" is a great human being.
