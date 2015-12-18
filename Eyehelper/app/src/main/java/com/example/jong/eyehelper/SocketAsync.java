@@ -27,12 +27,10 @@ public class SocketAsync extends AsyncTask<String, Void, String> {
         String messageToSend = strings[1];
         try {
             socket = new Socket(ipAddress, port);
-//            socket = new Socket("10.7.64.225", 8888);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             dataOutputStream.writeUTF(messageToSend);
-
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";
@@ -43,7 +41,6 @@ public class SocketAsync extends AsyncTask<String, Void, String> {
             socket.close();
 
             return receivedMessage;
-
 
         } catch (IOException ex) {
             Log.e("socket_error", ex.getMessage());

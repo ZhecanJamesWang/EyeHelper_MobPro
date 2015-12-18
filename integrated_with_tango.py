@@ -227,8 +227,3 @@ if __name__ == "__main__":
 	es = EchoSocket()
 	while True:
 		es.read_socket(32)
-
-		"""
-ived:  Yaw 4.4265276E-4 	Sending:  nul
-Received:  Yaw 4.4
-		"""

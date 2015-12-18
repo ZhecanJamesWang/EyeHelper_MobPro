@@ -72,15 +72,15 @@ public class UIFragment extends Fragment implements Runnable{
                     addToDatabase("point", point, true);
                 }
                 else if(response.length > 3){
-                        if (response[2].equals("arrived")){
-                    try {
-                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
-                        r.play();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (response[2].equals("arrived")){
+                        try {
+                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
+                            r.play();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
                 }
             }
         };
@@ -121,7 +121,7 @@ public class UIFragment extends Fragment implements Runnable{
                 }
                 mainActivity.findWordFromList(wordlist, true);
 
-                    }
+            }
         });
 
         startNewRoute.setOnClickListener(new View.OnClickListener() {
@@ -312,7 +312,7 @@ public class UIFragment extends Fragment implements Runnable{
         String[] allpreflist = AllSharePref();
         for (int i = 0; i < allpreflist.length; i++) {
             SharedPreferences pref = getActivity().getSharedPreferences(allpreflist[i], Context.MODE_PRIVATE);
-                if (pref.contains("landmark1")&&pref.contains("landmark2")){
+            if (pref.contains("landmark1")&&pref.contains("landmark2")){
                 String landmark1 = pref.getString("landmark1", null);
                 String landmark2 = pref.getString("landmark2", null);
                 Log.d("landmark1", landmark1);
@@ -344,7 +344,7 @@ public class UIFragment extends Fragment implements Runnable{
             String route = datafiletoRoute(currentPres);
             String outputSpeech = "Do you want to start navigation this route?";
             mainActivity.speakAndListen(outputSpeech, false, true, false, route);
-            }
+        }
         else {
             Log.d(TAG, "too many landmarks");
         }
@@ -365,7 +365,7 @@ public class UIFragment extends Fragment implements Runnable{
         Log.d("addint to database", key+":"+value);
         editor.putString(key, value);
         editor.commit();
-        }
+    }
     public double getLatitude(){
         double latitude = 2.000;
         return latitude;

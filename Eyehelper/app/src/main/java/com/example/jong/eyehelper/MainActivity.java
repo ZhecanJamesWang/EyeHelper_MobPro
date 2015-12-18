@@ -187,8 +187,8 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                         }
                         else{
 
-                        String outputSpeech = "Sorry, please try to speak again!";
-                        speakAndListen(outputSpeech, true, true, routes, null);
+                            String outputSpeech = "Sorry, please try to speak again!";
+                            speakAndListen(outputSpeech, true, true, routes, null);
 
                         }
 
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         //call superclass method
         super.onActivityResult(requestCode, resultCode, data);
 
-        }
+    }
 
 
     private void setTtsListener() {
@@ -324,9 +324,9 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     public void onInit(int initStatus) {
         if (initStatus == TextToSpeech.SUCCESS)
             repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
-            String outputSpeech = "Welcome to Eye Helper project";
-            speakAndListen(outputSpeech, false, false, routes, null);
-            Log.d(TAG,"onInit");
+        String outputSpeech = "Welcome to Eye Helper project";
+        speakAndListen(outputSpeech, false, false, routes, null);
+        Log.d(TAG,"onInit");
 
     }
 

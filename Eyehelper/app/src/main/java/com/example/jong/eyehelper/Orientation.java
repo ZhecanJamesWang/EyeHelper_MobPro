@@ -244,7 +244,6 @@ public abstract class Orientation implements OrientationInterface,
 
 
     private void update(float[] vectors, SocketCallback cb) {
-
         float yaw = vectors[0];
         float pitch = vectors[1];
         float Roll = vectors[2];
