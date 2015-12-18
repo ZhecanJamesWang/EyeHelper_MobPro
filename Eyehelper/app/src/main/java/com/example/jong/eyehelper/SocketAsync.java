@@ -38,18 +38,6 @@ public class SocketAsync extends AsyncTask<String, Void, String> {
             String receivedMessage = "";
             receivedMessage += bufferedReader.readLine();
 
-//            else{
-//                Thread.sleep(1000);
-//            }
-//            bytes_received = bufferedReader.read(buffer);
-
-//            while ((bytes_received = bufferedReader.read(buffer)) > 0) {
-//            receivedMessage += new String(buffer, "UTF-8");
-//            Log.d("socket_info", "in while" + receivedMessage);
-//            }
-//            Log.d("socket_info", receivedMessage);
-
-//            dataOutputStream.flush();
             dataOutputStream.close();
             bufferedReader.close();
             socket.close();

@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 //            //start the checking Intent - will retrieve result in onActivityResult
         this.startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
-//        Log.d(TAG, "tts launch sucessfully");
 
         manager = getSupportFragmentManager();
         setContentView(R.layout.activity_main);
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     }
 
     public void onFragmentInteraction(Uri uri) {
-        //empty right now
     }
 
     public void speakAndListen(String outputSpeech, Boolean firstTIme, Boolean Listening, Boolean routes, String endNavRoute){
@@ -152,14 +150,8 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     Log.d("YOU SAY YES!", tmpCommand);
                     if (endNavRoute == null) {
                         String outSpeech = "You choose " + tmpCommand;
-                        ;
-//                    if (endNavRoute != null){
                         speakAndListen(outSpeech, true, false, routes, endNavRoute);
                     }
-//                    }
-//                    else{
-//                        speakAndListen(outSpeech, true, false, routes, null);
-//                    }
                     if(routes){
                         uiFragment.startNavigatingRoute(tmpCommand);
                     }
@@ -330,7 +322,6 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     }
 
     public void onInit(int initStatus) {
-        //if successful, set locale
         if (initStatus == TextToSpeech.SUCCESS)
             repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
             String outputSpeech = "Welcome to Eye Helper project";
