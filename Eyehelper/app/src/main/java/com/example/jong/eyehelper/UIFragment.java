@@ -3,6 +3,8 @@ package com.example.jong.eyehelper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,6 +61,17 @@ public class UIFragment extends Fragment{
                     String point = x+","+y+";";
                     Log.d("onTaskCompleted","saving "+point);
                     addToDatabase("point", point, true);
+                }
+                else if(response.length > 3){
+                        if (response[2].equals("arrived")){
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 }
             }
         };
@@ -163,6 +176,13 @@ public class UIFragment extends Fragment{
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
+                    r.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Log.d("point", "clicked");
                 String listForAsync[];
                 String messageText = "cmd point";
