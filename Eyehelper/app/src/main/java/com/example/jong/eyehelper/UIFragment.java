@@ -1,15 +1,16 @@
 package com.example.jong.eyehelper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,9 +20,17 @@ import android.widget.LinearLayout;
  * Use the {@link UIFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UIFragment extends Fragment {
+public class UIFragment extends Fragment implements Runnable{
     private OnFragmentInteractionListener mListener;
-    public SensorHandler sensorHandler;
+    private String ipAddress = "192.168.35.53";
+    private static final int FROM_RADS_TO_DEGS = 57;
+    protected Handler handler;
+    private Context context;
+    private Orientation orientation;
+    private float[] vOrientation = new float[3];
+    protected Runnable runable;
+
+
 
     public static UIFragment newInstance(String param1, String param2) {
         UIFragment fragment = new UIFragment();
@@ -35,13 +44,13 @@ public class UIFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        sensorHandler = new SensorHandler(getActivity());
         View uiLayout = inflater.inflate(R.layout.fragment_ui, container, false);
         Button goToExisting = (Button) uiLayout.findViewById(R.id.existing_landmark);
         Button newLandmark = (Button) uiLayout.findViewById(R.id.new_landmark);
@@ -53,6 +62,9 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("goexisting", "clicked");
+                reset();
+                orientation.onResume();
+                handler.post(runable);
             }
         });
 
@@ -60,6 +72,8 @@ public class UIFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("newlandmark","clicked");
+                orientation.onPause();
+                handler.removeCallbacks(runable);
             }
         });
 
@@ -112,21 +126,43 @@ public class UIFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+    @Override
+    public void run() {
+
     }
 
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    private void reset()
+    {
+        orientation = new GyroscopeOrientation(context);
+        Log.d("reset called","aaaaaaaa");
+        handler = new Handler();
+
+        runable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                handler.postDelayed(this, 100);
+                vOrientation = orientation.getOrientation();
+                update(vOrientation);
+
+            }
+        };
+    }
+
+    private void update(float[] vectors) {
+        float yaw = vectors[0] * FROM_RADS_TO_DEGS;
+        String messageText = "Yaw" + " " + Float.valueOf(yaw).toString();
+        String listForAsync[];
+        listForAsync = new String[] {ipAddress, messageText};
+        new SocketAsync().execute(listForAsync);
+
+    }
 
 
 }
