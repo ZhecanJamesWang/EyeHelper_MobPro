@@ -11,53 +11,63 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class SocketAsync extends AsyncTask<String, Void, Void> {
+public class SocketAsync extends AsyncTask<String, Void, String> {
+    public SocketCallback cb;
+    public SocketAsync(SocketCallback cb){
+         this.cb = cb;
+    }
     @Override
-    protected Void doInBackground(String[] strings) {
-        int port = 8889;
+    protected String doInBackground(String[] strings) {
+        int port = 8888;
         int BUFFER_LENGTH = 128;
         Socket socket = null;
         DataOutputStream dataOutputStream = null;
-//        DataInputStream dataInputStream = null;
-        BufferedReader dataInputStream = null; // todo: rename to sth right.
+        BufferedReader bufferedReader = null; // todo: rename to sth right.
         String ipAddress = strings[0];
         String messageToSend = strings[1];
         try {
             socket = new Socket(ipAddress, port);
 //            socket = new Socket("10.7.64.225", 8888);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataInputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             dataOutputStream.writeUTF(messageToSend);
 
 
 
-//            Log.d("socket_info", "be receive");
+            Log.d("socket_info", "be receive");
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";
-            receivedMessage += dataInputStream.readLine();
+            receivedMessage += bufferedReader.readLine();
 
 //            else{
 //                Thread.sleep(1000);
 //            }
-//            bytes_received = dataInputStream.read(buffer);
+//            bytes_received = bufferedReader.read(buffer);
 
-//            while ((bytes_received = dataInputStream.read(buffer)) > 0) {
+//            while ((bytes_received = bufferedReader.read(buffer)) > 0) {
 //            receivedMessage += new String(buffer, "UTF-8");
 //            Log.d("socket_info", "in while" + receivedMessage);
 //            }
-            Log.d("socket_info", receivedMessage);
+//            Log.d("socket_info", receivedMessage);
 
 //            dataOutputStream.flush();
             dataOutputStream.close();
-            dataInputStream.close();
+            bufferedReader.close();
             socket.close();
+
+            return receivedMessage;
 
 
         } catch (IOException ex) {
             Log.e("socket_error", ex.getMessage());
         }
-        return null;
+        return "error";
     }
+    @Override
+    protected void onPostExecute(String receivedData){
+        cb.onTaskCompleted(receivedData);
+    }
+
 }
