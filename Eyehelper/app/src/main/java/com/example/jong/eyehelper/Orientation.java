@@ -243,8 +243,7 @@ public abstract class Orientation implements OrientationInterface,
     }
 
 
-    private void update(float[] vectors) {
-
+    private void update(float[] vectors, SocketCallback cb) {
         float yaw = vectors[0];
         float pitch = vectors[1];
         float Roll = vectors[2];
@@ -252,6 +251,6 @@ public abstract class Orientation implements OrientationInterface,
         String messageText = "Yaw" + " " + Float.valueOf(yaw).toString();
         String listForAsync[];
         listForAsync = new String[] {ipAddress, messageText};
-        new SocketAsync().execute(listForAsync);
+        new SocketAsync(cb).execute(listForAsync);
     }
 }

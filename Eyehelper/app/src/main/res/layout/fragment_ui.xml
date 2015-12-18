@@ -8,30 +8,35 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
     android:id="@+id/fragment_ui"
-    >
+    android:baselineAligned="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        >
+        android:weightSum="1">
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/existing_landmark"
-            android:id="@+id/existing_landmark"
-            android:contentDescription="@string/existing_landmark"
-            />
+            android:layout_height="97dp"
+            android:text="@string/existingRoutes"
+            android:id="@+id/existingRoutes"
+            android:layout_weight="0.31" />
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/new_landmark"
-            android:id="@+id/new_landmark"
-            android:contentDescription="@string/new_landmark"
-            />
+            android:layout_height="107dp"
+            android:text="@string/startNewRoute"
+            android:id="@+id/startNewRoute"
+            android:layout_weight="0.28" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/endNewRoute"
+            android:id="@+id/endNewRoute"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.57" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -40,30 +45,20 @@
         android:layout_weight="1"
         android:orientation="vertical"
         >
+
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/next_landmark"
-            android:id="@+id/next_landmark"
-            android:contentDescription="@string/next_landmark"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/prev_landmark"
-            android:id="@+id/prev_landmark"
-            android:contentDescription="@string/prev_landmark"
+            android:layout_height="249dp"
+            android:text="@string/Zero"
+            android:id="@+id/Zero"
             />
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/settings"
-            android:id="@+id/settings"
-            android:contentDescription="@string/settings"
-            />
+            android:layout_height="wrap_content"
+            android:text="@string/point"
+            android:id="@+id/point"
+            android:layout_weight="1.08" />
+
     </LinearLayout>
 </LinearLayout>

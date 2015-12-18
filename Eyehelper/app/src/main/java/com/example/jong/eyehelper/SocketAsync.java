@@ -27,38 +27,20 @@ public class SocketAsync extends AsyncTask<String, Void, String> {
         String messageToSend = strings[1];
         try {
             socket = new Socket(ipAddress, port);
-//            socket = new Socket("10.7.64.225", 8888);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             dataOutputStream.writeUTF(messageToSend);
-
-
-
-            Log.d("socket_info", "be receive");
             byte[] buffer = new byte[BUFFER_LENGTH];
             int bytes_received;
             String receivedMessage = "";
             receivedMessage += bufferedReader.readLine();
 
-//            else{
-//                Thread.sleep(1000);
-//            }
-//            bytes_received = bufferedReader.read(buffer);
-
-//            while ((bytes_received = bufferedReader.read(buffer)) > 0) {
-//            receivedMessage += new String(buffer, "UTF-8");
-//            Log.d("socket_info", "in while" + receivedMessage);
-//            }
-//            Log.d("socket_info", receivedMessage);
-
-//            dataOutputStream.flush();
             dataOutputStream.close();
             bufferedReader.close();
             socket.close();
 
             return receivedMessage;
-
 
         } catch (IOException ex) {
             Log.e("socket_error", ex.getMessage());

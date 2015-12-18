@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Basic echo server - prints text sent from an android, hopefully.
 the person who wrote "https://docs.python.org/2/howto/sockets.html" is a great human being.
@@ -76,7 +77,7 @@ class EchoSocket(object):
 			if len(buf) > 0:
 				self.refresh_all()
 				response_to_send = self.handle_socket_input(buf)
-				# print "Received: ", str(buf), '\t', "Sending: ", response_to_send
+				print "Received: ", str(buf), '\t', "Sending: ", response_to_send
 				c.sendall(response_to_send)
 				break
 		c.close()
@@ -226,8 +227,3 @@ if __name__ == "__main__":
 	es = EchoSocket()
 	while True:
 		es.read_socket(32)
-
-		"""
-ived:  Yaw 4.4265276E-4 	Sending:  nul
-Received:  Yaw 4.4
-		"""
