@@ -104,7 +104,7 @@ class EchoSocket(object):
 				self.phone_yaw = new_yaw #relative to the tango
 			if self.isOnTrail:
 				phone_angle_to_target = self.angle_to_go - self.phone_yaw
-				response = "dif " + str(phone_angle_to_target)# angle difference between phone's current orientation and the target.
+				response = "dif," + str(phone_angle_to_target)# angle difference between phone's current orientation and the target.
 				if self.justArrived:
 					response = response + "| arrived"
 					self.justArrived = False

@@ -7,6 +7,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ public class UIFragment extends Fragment implements Runnable{
     private Orientation orientation;
     private float[] vOrientation = new float[3];
     protected Runnable runable;
+    private Vibrator vibrator;
 
 
     public static UIFragment newInstance(String param1, String param2) {
@@ -58,6 +60,7 @@ public class UIFragment extends Fragment implements Runnable{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mainActivity = (MainActivity)getActivity();
         socketCallback = new SocketCallback() {
             @Override
@@ -70,6 +73,15 @@ public class UIFragment extends Fragment implements Runnable{
                     String point = x+","+y+";";
                     Log.d("onTaskCompleted","saving "+point);
                     addToDatabase("point", point, true);
+                }
+                else if (response[0].equals("dif")){
+                    double angle_difference = Double.valueOf(response[1]);
+                    if (angle_difference < 10) { // 10 degrees is a more-or-less arbitrary cutoff.
+                        long[] pattern = {0, 100, 0};
+                        vibrator.vibrate(pattern, 0); // Has  it vibrate until the next system call, basically. 1/10 of a second.
+                    } else {
+                        vibrator.cancel();
+                    }
                 }
                 else if(response.length > 3){
                     if (response[2].equals("arrived")){
