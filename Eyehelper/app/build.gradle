@@ -5,6 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
+		//Could be useful to make the application ID not tied to jong?
         applicationId "com.example.jong.eyehelper"
         minSdkVersion 15
         targetSdkVersion 23
@@ -22,8 +23,11 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+	//nice use of a testing framework
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.0.1'
+	//you don't need this if you have the top?
+	//you might need to move it into libs for it to work though
     compile files('lib/commons-math3-3.5.jar')
 }

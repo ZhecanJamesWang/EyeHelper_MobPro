@@ -48,6 +48,8 @@
 
         <Button
             android:layout_width="match_parent"
+			//try not to have set heights in order to make it compatible
+			//this is even more important for your users
             android:layout_height="249dp"
             android:text="@string/Zero"
             android:id="@+id/Zero"

@@ -1,5 +1,6 @@
 package com.example.jong.eyehelper.kalmanfilters;
 
+//Same as before
 /**
  * Created by jong on 12/1/15.
  */
@@ -10,6 +11,7 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+//This guy must heavily use these sensors.
 /*
  * Acceleration Explorer
  * Copyright (C) 2013-2015, Kaleb Kircher - Kircher Engineering, LLC

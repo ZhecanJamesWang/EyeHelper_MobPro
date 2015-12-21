@@ -2,6 +2,8 @@
 """
 Basic echo server - prints text sent from an android, hopefully.
 the person who wrote "https://docs.python.org/2/howto/sockets.html" is a great human being.
+
+Good job citing your sources. Might want to make it more formal however.
 """
 
 import socket
@@ -16,6 +18,7 @@ from tf import TransformListener
 from tf.transformations import euler_from_quaternion
 from std_msgs.msg import Float64, Float64MultiArray, String, Int32
 #TODO: Cleanup imports.
+#Good to acknowledge this
 
 class EchoSocket(object):
 	"""
@@ -68,6 +71,8 @@ class EchoSocket(object):
 
 	def read_socket(self, msg_bytes=32):
 		"""
+		good use of default values
+		
 		reads msg_bytes bytes from self.sock
 		"""
 		while True:
@@ -152,6 +157,10 @@ class EchoSocket(object):
 		return response
 
 	#================ ROS Message - Handler functions ============
+	'''
+	im not 100% sure of python commenting convention, but having some 
+	mention of input/return value could be useful for others trying to read your code
+	'''
 	def process_pose(self, msg):
 		"""
 		zeroes position data, then writes it to class variables.
@@ -225,5 +234,6 @@ class EchoSocket(object):
 
 if __name__ == "__main__":
 	es = EchoSocket()
+	#could it be useful to be able to break this loop? just wondering
 	while True:
 		es.read_socket(32)

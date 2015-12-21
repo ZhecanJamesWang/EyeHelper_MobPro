@@ -21,13 +21,16 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.UtteranceProgressListener;
 import android.widget.Toast;
 
+//Good use of the TTS listener as an interface
 public class MainActivity extends AppCompatActivity implements UIFragment.OnFragmentInteractionListener, TextToSpeech.OnInitListener{
 
+	// these could be useful to mark as private
     FragmentManager manager;
     FragmentTransaction transaction;
 
     //variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
+	//I like your use of a debug tag
     private final String TAG = "SpeechRepeatActivity";
     private Boolean firstTIme = true;
     private ArrayList<String> suggestedWords;
@@ -37,9 +40,13 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
     private Boolean ttsFinish = false;
     public UIFragment uiFragment;
     private Boolean routes;
+	//make this private
     int deleteConfirm = 0;
     private String endNavRoute = null;
-
+	//overall great use of private vs public
+	
+	//needs commenting
+	//java docs are incredibly easy to generate in android studio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
     }
 
+	//again, comments please
     public void onFragmentInteraction(Uri uri) {
     }
 
@@ -85,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
     }
 
+	//Comment your overal method as well!
     public void listenToSpeech() {
 
         //start the speech recognition intent passing required data
@@ -124,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
      *  - retrieving results of speech recognition listening
      *  - retrieving result of TTS data check
      */
+	 //Good, do this for all/most methods
+	 //USE STRINGS.XML, its your friend, not your enemy.
+	 //Im not gonna lie, this a beefy method but it is difficult to minimize this one in particular
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //check speech recognition result
@@ -146,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                     String tmpCommand = suggestedWords.get(0);
                     suggestedWords.clear();
                     suggestedWords.add(tmpCommand);
+					//Good use of toasts
                     Toast.makeText(getApplicationContext(), "you choose " + tmpCommand, Toast.LENGTH_SHORT).show();
                     Log.d("YOU SAY YES!", tmpCommand);
                     if (endNavRoute == null) {
@@ -209,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                         file.delete();
 
                         deleteConfirm =0;
+						//Strings.xml
                         String outputSpeech = "You successfully delete the route!";
                         speakAndListen(outputSpeech, false, false, routes, null);
                     }
@@ -225,6 +239,8 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
                 else{
                     word = suggestedWords.get(0);
                     String outputSpeech;
+					//Put these into your strings.xml file
+					//Basic stuff guys!
                     if (routes){
                         outputSpeech = "Sorry. I don't get it. Did you want to choose the route, " + word + " before ?" + " Please answer yes, next or cancel";
                     }
@@ -262,8 +278,10 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
     }
 
-
+	
+	//Good use of the private method
     private void setTtsListener() {
+		//great use of SDK versioning
         if (Build.VERSION.SDK_INT >= 15)
         {
             int listenerResult = repeatTTS.setOnUtteranceProgressListener(new UtteranceProgressListener()
@@ -309,9 +327,10 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
         }
     }
 
-
+	//Comments.
     public String getOutputSpeech(String word){
         String outputSpeech;
+		//String.xml
         if (routes){
             outputSpeech = "Do you want to choose the route, " + word + "?" + "Please answer yes, next or cancel";
         }
@@ -323,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements UIFragment.OnFrag
 
     public void onInit(int initStatus) {
         if (initStatus == TextToSpeech.SUCCESS)
+			//Why UK locale? does it not US?
             repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
         String outputSpeech = "Welcome to Eye Helper project";
         speakAndListen(outputSpeech, false, false, routes, null);

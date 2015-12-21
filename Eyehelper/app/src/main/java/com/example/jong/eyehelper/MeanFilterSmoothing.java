@@ -1,5 +1,6 @@
 package com.example.jong.eyehelper;
 
+//Same as before
 /**
  * Created by jong on 11/19/15.
  */
@@ -7,6 +8,30 @@ package com.example.jong.eyehelper;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+//You guys leaned heavily on this code, be sure to talk about this if
+//you guys make a readme for your github.
+
+/*
+ * So im just going to condense all my thoughts about your borrowed code
+ * here so its easier to read and digest. First of all, I think its great
+ * that you guys showed the initiative to go out and find code that not
+ * only fixes your sensitivity problems but improves performance in code
+ * rather than in hardware. Second, you cited your borrowed code and 
+ * made sure that it was truelly redistributable. Good job on those points.
+ * My only worry here, is that you may not have gotten as much out of this
+ * portion of the project as the teaching team and you may have liked.
+ * It is very important that every line of code you place in a program
+ * you call yours is functionally understood by the team. In this case,
+ * as significant portion(8/12 class files, ~1800/2600 lines) were not
+ * written by you. As such, you really should, and are, expected to know
+ * the intricacies of how your code works. That being said, a large portion
+ * of creating novel and interesting projects is by working off the 
+ * knowledge and effort of others. In any case, I really hope you read this
+ * and understand where I am coming from. Expect questions from me regarding
+ * the function of Kaleb's code and how you discovered it. Great work finding
+ * this suite of tools, it fits your project superbly!
+*/
 
 /*
  * Gyroscope Explorer

@@ -37,6 +37,8 @@ public class UIFragment extends Fragment implements Runnable{
     public SocketCallback socketCallback;
 
     private OnFragmentInteractionListener mListener;
+	//Make the comment not run off the page, not all interpreters have a wrap
+	//Could be nice to make the ipaddress in an xml file that is only local
     private String ipAddress = "192.168.32.168"; // REPLACE WITH WHATEVER THE IP ADDRESS IS OF THE COMPUTER RUNNING THE SERVER! also make sure they're both on the same network, preferably olin-robotics b/c that one handles IP addresses nicer.
     private static final int FROM_RADS_TO_DEGS = 57;
     protected Handler handler;
@@ -86,6 +88,7 @@ public class UIFragment extends Fragment implements Runnable{
                 else if(response.length > 3){
                     if (response[2].equals("arrived")){
                         try {
+							//Cool use of the ringtone for user interaction
                             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                             Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
                             r.play();
@@ -113,10 +116,12 @@ public class UIFragment extends Fragment implements Runnable{
         Button point = (Button) uiLayout.findViewById(R.id.point);
         reset(socketCallback);
 
+		//Move these on click listeners elsewhere so they don't clutter the fragment
         existingRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wordlist.clear();
+				//String.xml please
                 String outSpeech = "The existing routes are as followings: ";
                 mainActivity.speakAndListen(outSpeech, true, false, true, null);
                 Log.d("existing routes", "clicked");
@@ -181,7 +186,7 @@ public class UIFragment extends Fragment implements Runnable{
             }
         });
 
-
+		//Onclick listeners again
         Zero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,6 +234,7 @@ public class UIFragment extends Fragment implements Runnable{
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
+			//Try using a stacktrace as well on this in order to see where the error is occuring
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
@@ -240,6 +246,7 @@ public class UIFragment extends Fragment implements Runnable{
         mListener = null;
     }
 
+	//Good citation of work
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -318,6 +325,7 @@ public class UIFragment extends Fragment implements Runnable{
         mainActivity.speakAndListen("start navigating the route: " + routes, true, false, true, null);
 
     }
+	//You might not want to return a public accessible version of your preferences
     public SharedPreferences routetoDatafile(String routes) {
         routes = routes.replace("from ", "");
         String [] landmarks = routes.split(" to ");
@@ -392,6 +400,7 @@ public class UIFragment extends Fragment implements Runnable{
 
     }
 
+	//Good use of private vs public
     private void reset(final SocketCallback cb)
     {
         orientation = new GyroscopeOrientation(context);

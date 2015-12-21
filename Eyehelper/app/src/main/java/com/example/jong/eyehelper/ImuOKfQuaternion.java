@@ -1,5 +1,6 @@
 package com.example.jong.eyehelper;
 
+//Same as before, might be useful to remove this
 /**
  * Created by jong on 12/1/15.
  */
@@ -15,6 +16,8 @@ import android.util.Log;
 import com.example.jong.eyehelper.kalmanfilters.RotationKalmanFilter;
 import com.example.jong.eyehelper.kalmanfilters.RotationMeasurementModel;
 import com.example.jong.eyehelper.kalmanfilters.RotationProcessModel;
+
+//Good citation and exploration guys
 
 /*
  * Gyroscope Explorer

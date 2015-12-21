@@ -1,8 +1,12 @@
 package com.example.jong.eyehelper;
 
+//Same as before
 /**
  * Created by jong on 11/19/15.
  */
+ 
+ //If this code is created by Kaleb Kircher, you should site him, even if he has not
+ //added the license agreement at the top
 public interface OrientationInterface
 {
     /**
