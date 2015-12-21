@@ -1,16 +1,18 @@
 package com.example.jong.eyehelper;
-
+//might want to remove this? you didn't actually create the code
 /**
  * Created by jong on 12/2/15.
  */
 import java.util.Arrays;
 
+//wow, nice use of an advanced math package
 import org.apache.commons.math3.complex.Quaternion;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
+//a good example of a proper citation, reference this for your python code
 /*
  * Gyroscope Explorer
  * Copyright (C) 2013-2015, Kaleb Kircher - Kircher Engineering, LLC
@@ -29,6 +31,7 @@ import android.hardware.SensorManager;
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ //Good job finding relevant code to make your lives easier
 /**
  * A class that integrates rotation delta's provided by a gyroscope sensor and
  * outputs an orientation based on Euler angles in units of radians.
@@ -265,7 +268,8 @@ public class GyroscopeOrientation extends Orientation
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_FASTEST);
     }
-
+	
+	//is this empty on purpose? or did you guys remove it.
     /**
      * The complementary filter coefficient, a floating point value between 0-1,
      * exclusive of 0, inclusive of 1.

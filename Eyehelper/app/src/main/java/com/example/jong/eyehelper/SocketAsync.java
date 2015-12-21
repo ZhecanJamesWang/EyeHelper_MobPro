@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+//Looks good for a Socket implementation
+//Could use some commenting love
 public class SocketAsync extends AsyncTask<String, Void, String> {
     public SocketCallback cb;
     public SocketAsync(SocketCallback cb){

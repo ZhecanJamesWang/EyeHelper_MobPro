@@ -1,5 +1,6 @@
 package com.example.jong.eyehelper.kalmanfilters;
 
+//Same as before
 /**
  * Created by jong on 12/1/15.
  */
@@ -7,6 +8,9 @@ import org.apache.commons.math3.filter.MeasurementModel;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
+
+//I would make 100% sure you know how this and all other code
+// you use from Kaleb works.
 /*
  * Acceleration Explorer
  * Copyright (C) 2013-2015, Kaleb Kircher - Kircher Engineering, LLC
